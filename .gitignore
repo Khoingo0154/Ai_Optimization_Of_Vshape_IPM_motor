@@ -3,26 +3,27 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Cextensions
-*.so
-
-# Distribution / packaging
-.Python
-env/
-venv/
+# Python virtual environment
 .venv/
+venv/
+env/
 ENV/
 
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# VS Code / IDE
+# VS Code / IDE / OS settings
 .vscode/
 .idea/
+.DS_Store
+Thumbs.db
 
-# Large temporary simulation output state
-output/*.pkl
-output/output_vars_iter_*.csv
+# Ansys Maxwell simulation temporary files & cache
 *.aedtresults/
+*.aedtresults
+*.aedt.auto
+*.aedt.lock
 *.tmp
 
+# Large temporary simulation output state & logs
+output/*.pkl
+output/output_vars_iter_*.csv
+output/simulation_history.csv
+*.log
