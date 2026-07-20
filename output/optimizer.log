@@ -1,0 +1,653 @@
+2026-07-20 14:50:42,517 INFO Initialized fresh population of 8 individuals
+2026-07-20 14:50:42,518 INFO --- Generation 1 / 5 ---
+2026-07-20 14:50:42,518 INFO Gen 1 ñ best score 65.5000 | Eff 94.90% | Ripple 29.40% | Cost 142.00 | PwrDens 0.321
+2026-07-20 14:50:42,519 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\optimizer_state.pkl
+2026-07-20 14:50:42,519 INFO --- Generation 2 / 5 ---
+2026-07-20 14:50:42,520 INFO Gen 2 ñ best score 65.5000 | Eff 94.90% | Ripple 29.40% | Cost 142.00 | PwrDens 0.321
+2026-07-20 14:50:42,521 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\optimizer_state.pkl
+2026-07-20 14:50:42,521 INFO --- Generation 3 / 5 ---
+2026-07-20 14:50:42,521 INFO Gen 3 ñ best score 67.7500 | Eff 95.85% | Ripple 28.10% | Cost 144.00 | PwrDens 0.332
+2026-07-20 14:50:42,523 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\optimizer_state.pkl
+2026-07-20 14:50:42,523 INFO --- Generation 4 / 5 ---
+2026-07-20 14:50:42,523 INFO Gen 4 ñ best score 67.7500 | Eff 95.85% | Ripple 28.10% | Cost 144.00 | PwrDens 0.332
+2026-07-20 14:50:42,525 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\optimizer_state.pkl
+2026-07-20 14:50:42,525 INFO --- Generation 5 / 5 ---
+2026-07-20 14:50:42,525 INFO Gen 5 ñ best score 67.9750 | Eff 95.73% | Ripple 27.75% | Cost 140.00 | PwrDens 0.327
+2026-07-20 14:50:42,527 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\optimizer_state.pkl
+2026-07-20 14:50:42,527 INFO 
+===== OPTIMIZATION COMPLETE =====
+2026-07-20 14:50:42,527 INFO Best overall score : 67.9750
+2026-07-20 14:50:42,528 INFO Best design parameters:
+2026-07-20 14:50:42,528 INFO   Dr_in        : 75.0 mm
+2026-07-20 14:50:42,528 INFO   Air_gap      : 0.7 mm
+2026-07-20 14:50:42,528 INFO   Lamda        : 0.9 
+2026-07-20 14:50:42,528 INFO   Bridge       : 1.7 mm
+2026-07-20 14:50:42,528 INFO   Hs0          : 1.4 mm
+2026-07-20 14:50:42,528 INFO   Hs1          : 1.4 mm
+2026-07-20 14:50:42,529 INFO   Hs2          : 27.0 mm
+2026-07-20 14:50:42,529 INFO   Bs0          : 2.5 mm
+2026-07-20 14:50:42,529 INFO   Bs1          : 7.0 mm
+2026-07-20 14:50:42,529 INFO   Bs2          : 11.0 mm
+2026-07-20 14:50:42,529 INFO   O1           : 3.0 mm
+2026-07-20 14:50:42,529 INFO   O2           : 5.5 mm
+2026-07-20 14:50:42,530 INFO   B1           : 5.7 mm
+2026-07-20 14:50:42,530 INFO   rib          : 11.0 mm
+2026-07-20 14:50:42,530 INFO   hrib         : 4.0 mm
+2026-07-20 14:50:42,530 INFO   Mt           : 5.6 mm
+2026-07-20 14:50:42,530 INFO   Mw           : 16.0 mm
+2026-07-20 14:50:42,530 INFO   magDmin      : 9.0 mm
+2026-07-20 14:50:42,531 INFO   thet_deg     : 36.0 deg
+2026-07-20 14:50:42,559 INFO Best design saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\best_optimized_design_v2.csv
+2026-07-20 14:51:58,998 INFO Initialized fresh population of 8 individuals
+2026-07-20 14:51:58,998 INFO --- Generation 1 / 5 ---
+2026-07-20 14:51:58,998 INFO Gen 1 ñ best score 74.7250 | Eff 97.58% | Ripple 22.85% | Cost 146.00 | PwrDens 0.344
+2026-07-20 14:51:58,999 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\optimizer_state.pkl
+2026-07-20 14:51:59,000 INFO --- Generation 2 / 5 ---
+2026-07-20 14:51:59,000 INFO Gen 2 ñ best score 74.7250 | Eff 97.58% | Ripple 22.85% | Cost 146.00 | PwrDens 0.344
+2026-07-20 14:51:59,001 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\optimizer_state.pkl
+2026-07-20 14:51:59,001 INFO --- Generation 3 / 5 ---
+2026-07-20 14:51:59,001 INFO Gen 3 ñ best score 76.6000 | Eff 98.20% | Ripple 21.60% | Cost 141.00 | PwrDens 0.350
+2026-07-20 14:51:59,002 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\optimizer_state.pkl
+2026-07-20 14:51:59,003 INFO --- Generation 4 / 5 ---
+2026-07-20 14:51:59,003 INFO Gen 4 ñ best score 76.6000 | Eff 98.20% | Ripple 21.60% | Cost 141.00 | PwrDens 0.350
+2026-07-20 14:51:59,004 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\optimizer_state.pkl
+2026-07-20 14:51:59,004 INFO --- Generation 5 / 5 ---
+2026-07-20 14:51:59,004 INFO Gen 5 ñ best score 76.6000 | Eff 98.20% | Ripple 21.60% | Cost 141.00 | PwrDens 0.350
+2026-07-20 14:51:59,005 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\optimizer_state.pkl
+2026-07-20 14:51:59,005 INFO 
+===== OPTIMIZATION COMPLETE =====
+2026-07-20 14:51:59,005 INFO Best overall score : 76.6000
+2026-07-20 14:51:59,006 INFO Best design parameters:
+2026-07-20 14:51:59,006 INFO   Dr_in        : 90.0 mm
+2026-07-20 14:51:59,006 INFO   Air_gap      : 0.5 mm
+2026-07-20 14:51:59,006 INFO   Lamda        : 0.9 
+2026-07-20 14:51:59,006 INFO   Bridge       : 2.1 mm
+2026-07-20 14:51:59,006 INFO   Hs0          : 1.0 mm
+2026-07-20 14:51:59,006 INFO   Hs1          : 1.8 mm
+2026-07-20 14:51:59,006 INFO   Hs2          : 17.0 mm
+2026-07-20 14:51:59,006 INFO   Bs0          : 4.0 mm
+2026-07-20 14:51:59,006 INFO   Bs1          : 3.5 mm
+2026-07-20 14:51:59,006 INFO   Bs2          : 14.0 mm
+2026-07-20 14:51:59,006 INFO   O1           : 0.0 mm
+2026-07-20 14:51:59,006 INFO   O2           : 3.0 mm
+2026-07-20 14:51:59,006 INFO   B1           : 3.2 mm
+2026-07-20 14:51:59,006 INFO   rib          : 6.0 mm
+2026-07-20 14:51:59,006 INFO   hrib         : 6.0 mm
+2026-07-20 14:51:59,006 INFO   Mt           : 5.6 mm
+2026-07-20 14:51:59,006 INFO   Mw           : 18.0 mm
+2026-07-20 14:51:59,006 INFO   magDmin      : 2.0 mm
+2026-07-20 14:51:59,007 INFO   thet_deg     : 19.0 deg
+2026-07-20 14:51:59,010 INFO Best design saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\best_optimized_design_v2.csv
+2026-07-20 14:56:08,917 INFO Checkpoint loaded from D:\Ai_Optimization_Of_Vshape_IPM_motor\optimizer_state.pkl
+2026-07-20 14:56:08,918 INFO Resuming from generation 5 (best score 76.6000)
+2026-07-20 14:56:08,918 INFO --- Generation 6 / 10 ---
+2026-07-20 14:57:21,945 INFO Checkpoint loaded from D:\Ai_Optimization_Of_Vshape_IPM_motor\optimizer_state.pkl
+2026-07-20 14:57:21,945 INFO Resuming from generation 5 (best score 76.6000)
+2026-07-20 14:57:21,945 INFO --- Generation 6 / 10 ---
+2026-07-20 14:57:21,945 INFO Gen 6 ñ best score 76.6000 | Eff 98.20% | Ripple 21.60% | Cost 141.00 | PwrDens 0.350
+2026-07-20 14:57:21,946 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\optimizer_state.pkl
+2026-07-20 14:57:21,947 INFO --- Generation 7 / 10 ---
+2026-07-20 14:57:21,947 INFO Gen 7 ñ best score 77.5000 | Eff 98.50% | Ripple 21.00% | Cost 136.50 | PwrDens 0.350
+2026-07-20 14:57:21,948 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\optimizer_state.pkl
+2026-07-20 14:57:21,948 INFO --- Generation 8 / 10 ---
+2026-07-20 14:57:21,949 INFO Gen 8 ñ best score 77.5000 | Eff 98.50% | Ripple 21.00% | Cost 136.50 | PwrDens 0.350
+2026-07-20 14:57:21,951 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\optimizer_state.pkl
+2026-07-20 14:57:21,951 INFO --- Generation 9 / 10 ---
+2026-07-20 14:57:21,951 INFO Gen 9 ñ best score 77.5000 | Eff 98.50% | Ripple 21.00% | Cost 136.50 | PwrDens 0.350
+2026-07-20 14:57:21,952 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\optimizer_state.pkl
+2026-07-20 14:57:21,952 INFO --- Generation 10 / 10 ---
+2026-07-20 14:57:21,952 INFO Gen 10 ñ best score 77.5000 | Eff 98.50% | Ripple 21.00% | Cost 136.50 | PwrDens 0.350
+2026-07-20 14:57:21,953 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\optimizer_state.pkl
+2026-07-20 14:57:21,953 INFO 
+===== OPTIMIZATION COMPLETE =====
+2026-07-20 14:57:21,953 INFO Best overall score : 77.5000
+2026-07-20 14:57:21,953 INFO Best design parameters:
+2026-07-20 14:57:21,953 INFO   Dr_in        : 90.0 mm
+2026-07-20 14:57:21,953 INFO   Air_gap      : 0.5 mm
+2026-07-20 14:57:21,953 INFO   Lamda        : 0.9 
+2026-07-20 14:57:21,954 INFO   Bridge       : 2.1 mm
+2026-07-20 14:57:21,954 INFO   Hs0          : 1.3 mm
+2026-07-20 14:57:21,954 INFO   Hs1          : 1.3 mm
+2026-07-20 14:57:21,954 INFO   Hs2          : 18.0 mm
+2026-07-20 14:57:21,954 INFO   Bs0          : 4.0 mm
+2026-07-20 14:57:21,954 INFO   Bs1          : 4.0 mm
+2026-07-20 14:57:21,954 INFO   Bs2          : 14.0 mm
+2026-07-20 14:57:21,954 INFO   O1           : 1.0 mm
+2026-07-20 14:57:21,954 INFO   O2           : 2.5 mm
+2026-07-20 14:57:21,954 INFO   B1           : 4.2 mm
+2026-07-20 14:57:21,954 INFO   rib          : 9.0 mm
+2026-07-20 14:57:21,954 INFO   hrib         : 6.0 mm
+2026-07-20 14:57:21,954 INFO   Mt           : 5.0 mm
+2026-07-20 14:57:21,954 INFO   Mw           : 18.0 mm
+2026-07-20 14:57:21,954 INFO   magDmin      : 4.0 mm
+2026-07-20 14:57:21,954 INFO   thet_deg     : 20.0 deg
+2026-07-20 14:57:21,957 INFO Best design saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\best_optimized_design_v2.csv
+2026-07-20 18:45:18,306 INFO Initialized fresh population of 4 individuals
+2026-07-20 18:45:18,306 INFO Score weights: Eff=1.00  Ripple=1.00  PwrDens=0.50  Cost=0.050
+2026-07-20 18:45:18,306 INFO Early stopping: patience=20, min_delta=0.0100
+2026-07-20 18:45:18,306 INFO --- Generation 1 / 2 ---
+2026-07-20 18:45:18,307 INFO   [NEW BEST] Score: 63.2484
+2026-07-20 18:45:18,307 INFO Gen 1 | best=63.2484 | Eff=93.74% | Ripple=30.60% | PwrDens=0.326 | Cost=154.5 | no_improve=0/20
+2026-07-20 18:45:18,311 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\optimizer_state.pkl
+2026-07-20 18:45:18,311 INFO --- Generation 2 / 2 ---
+2026-07-20 18:45:18,311 INFO   [NEW BEST] Score: 65.5384
+2026-07-20 18:45:18,312 INFO Gen 2 | best=65.5384 | Eff=94.48% | Ripple=29.05% | PwrDens=0.321 | Cost=147.0 | no_improve=0/20
+2026-07-20 18:45:18,316 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\optimizer_state.pkl
+2026-07-20 18:45:18,317 INFO 
+===== OPTIMIZATION COMPLETE =====
+2026-07-20 18:45:18,317 INFO Best overall score : 65.5384
+2026-07-20 18:45:18,317 INFO Best design parameters:
+2026-07-20 18:45:18,317 INFO   Dr_in        : 70.0 mm
+2026-07-20 18:45:18,317 INFO   Air_gap      : 0.8 mm
+2026-07-20 18:45:18,317 INFO   Lamda        : 1.0 
+2026-07-20 18:45:18,317 INFO   Bridge       : 3.0 mm
+2026-07-20 18:45:18,317 INFO   Hs0          : 2.0 mm
+2026-07-20 18:45:18,317 INFO   Hs1          : 1.8 mm
+2026-07-20 18:45:18,317 INFO   Hs2          : 18.0 mm
+2026-07-20 18:45:18,317 INFO   Bs0          : 1.5 mm
+2026-07-20 18:45:18,317 INFO   Bs1          : 4.5 mm
+2026-07-20 18:45:18,317 INFO   Bs2          : 8.0 mm
+2026-07-20 18:45:18,318 INFO   O1           : 7.0 mm
+2026-07-20 18:45:18,318 INFO   O2           : 4.5 mm
+2026-07-20 18:45:18,318 INFO   B1           : 3.2 mm
+2026-07-20 18:45:18,318 INFO   rib          : 7.0 mm
+2026-07-20 18:45:18,318 INFO   hrib         : 5.5 mm
+2026-07-20 18:45:18,318 INFO   Mt           : 4.6 mm
+2026-07-20 18:45:18,318 INFO   Mw           : 30.0 mm
+2026-07-20 18:45:18,318 INFO   magDmin      : 5.0 mm
+2026-07-20 18:45:18,318 INFO   thet_deg     : 1.0 deg
+2026-07-20 18:45:18,320 INFO Best design saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\best_optimized_design_v2.csv
+2026-07-20 19:42:05,066 INFO Initialized fresh population of 4 individuals
+2026-07-20 19:42:05,066 INFO Score weights: Eff=1.00  Ripple=1.00  PwrDens=0.50  Cost=0.050
+2026-07-20 19:42:05,066 INFO Early stopping: patience=20, min_delta=0.0100
+2026-07-20 19:42:05,066 INFO --- Generation 1 / 3 ---
+2026-07-20 19:42:05,067 INFO   [NEW BEST] Score: 63.6205
+2026-07-20 19:42:05,067 INFO Gen 1 | best=63.6205 | Eff=93.41% | Ripple=29.90% | PwrDens=0.316 | Cost=153.0 | no_improve=0/20
+2026-07-20 19:42:05,071 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\optimizer_state.pkl
+2026-07-20 19:42:05,071 INFO --- Generation 2 / 3 ---
+2026-07-20 19:42:05,071 INFO   [NEW BEST] Score: 63.6872
+2026-07-20 19:42:05,072 INFO Gen 2 | best=63.6872 | Eff=93.48% | Ripple=29.90% | PwrDens=0.316 | Cost=153.0 | no_improve=0/20
+2026-07-20 19:42:05,074 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\optimizer_state.pkl
+2026-07-20 19:42:05,074 INFO --- Generation 3 / 3 ---
+2026-07-20 19:42:05,074 INFO   [NEW BEST] Score: 66.0192
+2026-07-20 19:42:05,074 INFO Gen 3 | best=66.0192 | Eff=94.01% | Ripple=28.10% | PwrDens=0.314 | Cost=153.5 | no_improve=0/20
+2026-07-20 19:42:05,076 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\optimizer_state.pkl
+2026-07-20 19:42:05,077 INFO 
+===== OPTIMIZATION COMPLETE =====
+2026-07-20 19:42:05,077 INFO Best overall score : 66.0192
+2026-07-20 19:42:05,077 INFO Best design parameters:
+2026-07-20 19:42:05,077 INFO   Dr_in        : 80.0 mm
+2026-07-20 19:42:05,077 INFO   Air_gap      : 0.9 mm
+2026-07-20 19:42:05,077 INFO   Lamda        : 0.8 
+2026-07-20 19:42:05,077 INFO   Bridge       : 2.2 mm
+2026-07-20 19:42:05,077 INFO   Hs0          : 1.2 mm
+2026-07-20 19:42:05,077 INFO   Hs1          : 1.0 mm
+2026-07-20 19:42:05,077 INFO   Hs2          : 31.0 mm
+2026-07-20 19:42:05,077 INFO   Bs0          : 2.5 mm
+2026-07-20 19:42:05,077 INFO   Bs1          : 4.0 mm
+2026-07-20 19:42:05,077 INFO   Bs2          : 7.0 mm
+2026-07-20 19:42:05,077 INFO   O1           : 0.0 mm
+2026-07-20 19:42:05,077 INFO   O2           : 5.5 mm
+2026-07-20 19:42:05,077 INFO   B1           : 3.7 mm
+2026-07-20 19:42:05,077 INFO   rib          : 15.0 mm
+2026-07-20 19:42:05,077 INFO   hrib         : 4.5 mm
+2026-07-20 19:42:05,077 INFO   Mt           : 4.8 mm
+2026-07-20 19:42:05,077 INFO   Mw           : 30.0 mm
+2026-07-20 19:42:05,078 INFO   magDmin      : 3.0 mm
+2026-07-20 19:42:05,078 INFO   thet_deg     : 82.0 deg
+2026-07-20 19:42:05,079 INFO Best design saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\best_optimized_design_v2.csv
+2026-07-20 19:43:53,502 INFO Initialized fresh population of 6 individuals
+2026-07-20 19:43:53,503 INFO Starting V-Shape IPM Motor Optimization v5 [Algorithm: NSGA2, Mode: offline, ML: True]
+2026-07-20 19:43:53,503 INFO --- Generation 1 / 5 ---
+2026-07-20 19:43:53,503 INFO   [NEW BEST] Score: 70.4656
+2026-07-20 19:43:53,503 INFO Gen 1 | best=70.4656 | Eff=94.50% | Ripple=24.15% | PwrDens=0.325 | Cost=153.9 | no_improve=0/20
+2026-07-20 19:43:53,506 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\optimizer_state.pkl
+2026-07-20 19:43:53,506 INFO --- Generation 2 / 5 ---
+2026-07-20 19:43:53,506 INFO Gen 2 | best=70.4656 | Eff=94.50% | Ripple=24.15% | PwrDens=0.325 | Cost=153.9 | no_improve=1/20
+2026-07-20 19:43:53,509 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\optimizer_state.pkl
+2026-07-20 19:43:53,509 INFO --- Generation 3 / 5 ---
+2026-07-20 19:43:53,509 INFO Gen 3 | best=70.4656 | Eff=94.50% | Ripple=24.15% | PwrDens=0.325 | Cost=153.9 | no_improve=2/20
+2026-07-20 19:43:53,511 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\optimizer_state.pkl
+2026-07-20 19:43:53,512 INFO --- Generation 4 / 5 ---
+2026-07-20 19:43:53,515 INFO Gen 4 | best=70.4656 | Eff=94.50% | Ripple=24.15% | PwrDens=0.325 | Cost=153.9 | no_improve=3/20
+2026-07-20 19:43:53,517 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\optimizer_state.pkl
+2026-07-20 19:43:53,517 INFO --- Generation 5 / 5 ---
+2026-07-20 19:43:53,518 INFO Gen 5 | best=70.4656 | Eff=94.50% | Ripple=24.15% | PwrDens=0.325 | Cost=153.9 | no_improve=4/20
+2026-07-20 19:43:53,519 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\optimizer_state.pkl
+2026-07-20 19:43:53,519 INFO 
+===== OPTIMIZATION COMPLETE =====
+2026-07-20 19:43:53,520 INFO Best overall score : 70.4656
+2026-07-20 19:43:53,520 INFO Best design parameters:
+2026-07-20 19:43:53,520 INFO   Dr_in        : 75.0 mm
+2026-07-20 19:43:53,520 INFO   Air_gap      : 0.5 mm
+2026-07-20 19:43:53,520 INFO   Lamda        : 0.9 
+2026-07-20 19:43:53,520 INFO   Bridge       : 2.4 mm
+2026-07-20 19:43:53,520 INFO   Hs0          : 1.0 mm
+2026-07-20 19:43:53,520 INFO   Hs1          : 1.5 mm
+2026-07-20 19:43:53,520 INFO   Hs2          : 24.0 mm
+2026-07-20 19:43:53,520 INFO   Bs0          : 2.0 mm
+2026-07-20 19:43:53,520 INFO   Bs1          : 4.0 mm
+2026-07-20 19:43:53,521 INFO   Bs2          : 5.0 mm
+2026-07-20 19:43:53,521 INFO   O1           : 6.0 mm
+2026-07-20 19:43:53,521 INFO   O2           : 2.0 mm
+2026-07-20 19:43:53,521 INFO   B1           : 4.7 mm
+2026-07-20 19:43:53,521 INFO   rib          : 15.0 mm
+2026-07-20 19:43:53,521 INFO   hrib         : 3.5 mm
+2026-07-20 19:43:53,521 INFO   Mt           : 5.6 mm
+2026-07-20 19:43:53,521 INFO   Mw           : 22.0 mm
+2026-07-20 19:43:53,521 INFO   magDmin      : 9.0 mm
+2026-07-20 19:43:53,521 INFO   thet_deg     : 77.0 deg
+2026-07-20 19:43:53,523 INFO Best design saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\best_optimized_design_v5.csv
+2026-07-20 19:44:12,392 INFO Initialized fresh population of 6 individuals
+2026-07-20 19:44:12,392 INFO Starting V-Shape IPM Motor Optimization v5 [Algorithm: NSGA2, Mode: offline, ML: True]
+2026-07-20 19:44:12,392 INFO --- Generation 1 / 5 ---
+2026-07-20 19:44:12,393 INFO   [NEW BEST] Score: 70.1485
+2026-07-20 19:44:12,393 INFO Gen 1 | best=70.1485 | Eff=95.41% | Ripple=25.38% | PwrDens=0.328 | Cost=142.1 | no_improve=0/20
+2026-07-20 19:44:12,397 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\optimizer_state.pkl
+2026-07-20 19:44:12,397 INFO --- Generation 2 / 5 ---
+2026-07-20 19:44:12,397 INFO Gen 2 | best=70.1485 | Eff=95.41% | Ripple=25.38% | PwrDens=0.328 | Cost=142.1 | no_improve=1/20
+2026-07-20 19:44:12,401 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\optimizer_state.pkl
+2026-07-20 19:44:12,401 INFO --- Generation 3 / 5 ---
+2026-07-20 19:44:12,401 INFO Gen 3 | best=70.1485 | Eff=95.41% | Ripple=25.38% | PwrDens=0.328 | Cost=142.1 | no_improve=2/20
+2026-07-20 19:44:12,403 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\optimizer_state.pkl
+2026-07-20 19:44:12,404 INFO --- Generation 4 / 5 ---
+2026-07-20 19:44:12,404 INFO Gen 4 | best=70.1485 | Eff=95.41% | Ripple=25.38% | PwrDens=0.328 | Cost=142.1 | no_improve=3/20
+2026-07-20 19:44:12,406 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\optimizer_state.pkl
+2026-07-20 19:44:12,406 INFO --- Generation 5 / 5 ---
+2026-07-20 19:44:12,407 INFO Gen 5 | best=70.1485 | Eff=95.41% | Ripple=25.38% | PwrDens=0.328 | Cost=142.1 | no_improve=4/20
+2026-07-20 19:44:12,409 INFO Checkpoint saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\optimizer_state.pkl
+2026-07-20 19:44:12,409 INFO 
+===== OPTIMIZATION COMPLETE =====
+2026-07-20 19:44:12,409 INFO Best overall score : 70.1485
+2026-07-20 19:44:12,409 INFO Best design parameters:
+2026-07-20 19:44:12,409 INFO   Dr_in        : 75.0 mm
+2026-07-20 19:44:12,409 INFO   Air_gap      : 0.5 mm
+2026-07-20 19:44:12,409 INFO   Lamda        : 1.0 
+2026-07-20 19:44:12,410 INFO   Bridge       : 1.7 mm
+2026-07-20 19:44:12,410 INFO   Hs0          : 1.5 mm
+2026-07-20 19:44:12,410 INFO   Hs1          : 1.4 mm
+2026-07-20 19:44:12,410 INFO   Hs2          : 29.0 mm
+2026-07-20 19:44:12,410 INFO   Bs0          : 3.0 mm
+2026-07-20 19:44:12,410 INFO   Bs1          : 3.5 mm
+2026-07-20 19:44:12,410 INFO   Bs2          : 8.0 mm
+2026-07-20 19:44:12,410 INFO   O1           : 6.0 mm
+2026-07-20 19:44:12,410 INFO   O2           : 4.5 mm
+2026-07-20 19:44:12,410 INFO   B1           : 3.7 mm
+2026-07-20 19:44:12,410 INFO   rib          : 7.0 mm
+2026-07-20 19:44:12,410 INFO   hrib         : 2.0 mm
+2026-07-20 19:44:12,411 INFO   Mt           : 4.4 mm
+2026-07-20 19:44:12,411 INFO   Mw           : 28.0 mm
+2026-07-20 19:44:12,411 INFO   magDmin      : 2.0 mm
+2026-07-20 19:44:12,411 INFO   thet_deg     : 40.0 deg
+2026-07-20 19:44:12,412 INFO Best design saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\best_optimized_design_v5.csv
+2026-07-20 19:44:14,019 INFO Pareto front visualization saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\pareto_front.png
+2026-07-20 19:44:14,060 INFO Sensitivity analysis saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\sensitivity_analysis.csv
+2026-07-20 19:44:14,065 INFO Top Efficiency Drivers: Lamda (+nan), Mw (+0.89), hrib (-0.79)
+2026-07-20 19:44:14,065 INFO Top TorqueRipple Drivers: Lamda (+nan), Hs2 (-0.90), Bridge (+0.78)
+2026-07-20 19:59:09,161 INFO ============================================================
+2026-07-20 19:59:09,161 INFO V-Shape IPM Motor Optimizer v5.1
+2026-07-20 19:59:09,161 INFO Started: 2026-07-20 19:59:09
+2026-07-20 19:59:09,161 INFO ============================================================
+2026-07-20 19:59:09,161 INFO Random seed: not set (results will vary between runs)
+2026-07-20 19:59:09,352 INFO Loaded 19 design parameters from bounds file
+2026-07-20 19:59:09,352 WARNING scikit-learn not available. ML surrogate will use KNN-IDW (install sklearn for GP).
+2026-07-20 19:59:09,354 INFO Initialized fresh population of 6 individuals
+2026-07-20 19:59:09,354 INFO Configuration: Algorithm=NSGA2 | Mode=offline | ML=True | PopSize=6 | Gens=5
+2026-07-20 19:59:09,354 INFO --- Generation 1 / 5 ---
+2026-07-20 19:59:09,355 INFO   üèÜ NEW BEST | Score: 69.8651 | Gen: 1
+2026-07-20 19:59:09,357 INFO Gen 1 | Best=69.8651 | Eff=94.7% | TR=25.0% | PD=0.339 | Cost=$144 | Stag=0/20
+2026-07-20 19:59:09,362 INFO --- Generation 2 / 5 ---
+2026-07-20 19:59:09,363 INFO   üèÜ NEW BEST | Score: 74.6031 | Gen: 2
+2026-07-20 19:59:09,364 INFO Gen 2 | Best=74.6031 | Eff=95.6% | TR=21.1% | PD=0.350 | Cost=$154 | Stag=0/20
+2026-07-20 19:59:09,368 INFO --- Generation 3 / 5 ---
+2026-07-20 19:59:09,369 INFO Gen 3 | Best=74.6031 | Eff=95.6% | TR=21.1% | PD=0.350 | Cost=$154 | Stag=1/20
+2026-07-20 19:59:09,382 INFO --- Generation 4 / 5 ---
+2026-07-20 19:59:09,383 INFO   üèÜ NEW BEST | Score: 76.1451 | Gen: 4
+2026-07-20 19:59:09,383 INFO Gen 4 | Best=76.1451 | Eff=96.0% | TR=20.0% | PD=0.341 | Cost=$144 | Stag=0/20
+2026-07-20 19:59:09,387 INFO --- Generation 5 / 5 ---
+2026-07-20 19:59:09,389 INFO   üèÜ NEW BEST | Score: 76.7475 | Gen: 5
+2026-07-20 19:59:09,389 INFO Gen 5 | Best=76.7475 | Eff=96.1% | TR=19.5% | PD=0.341 | Cost=$142 | Stag=0/20
+2026-07-20 19:59:09,394 INFO 
+============================================================
+2026-07-20 19:59:09,394 INFO OPTIMIZATION COMPLETE
+2026-07-20 19:59:09,394 INFO ============================================================
+2026-07-20 19:59:09,394 INFO Best Score: 76.7475 (found at generation 5)
+2026-07-20 19:59:09,394 INFO 
+Best Design Parameters:
+2026-07-20 19:59:09,394 INFO   Dr_in        = 90.0 mm
+2026-07-20 19:59:09,394 INFO   Air_gap      = 0.5 mm
+2026-07-20 19:59:09,394 INFO   Lamda        = 0.9 
+2026-07-20 19:59:09,394 INFO   Bridge       = 1.2 mm
+2026-07-20 19:59:09,394 INFO   Hs0          = 1.5 mm
+2026-07-20 19:59:09,395 INFO   Hs1          = 1.3 mm
+2026-07-20 19:59:09,395 INFO   Hs2          = 30.0 mm
+2026-07-20 19:59:09,395 INFO   Bs0          = 1.5 mm
+2026-07-20 19:59:09,395 INFO   Bs1          = 5.5 mm
+2026-07-20 19:59:09,395 INFO   Bs2          = 7.0 mm
+2026-07-20 19:59:09,395 INFO   O1           = 1.0 mm
+2026-07-20 19:59:09,395 INFO   O2           = 5.0 mm
+2026-07-20 19:59:09,395 INFO   B1           = 3.2 mm
+2026-07-20 19:59:09,395 INFO   rib          = 11.0 mm
+2026-07-20 19:59:09,395 INFO   hrib         = 3.5 mm
+2026-07-20 19:59:09,395 INFO   Mt           = 5.2 mm
+2026-07-20 19:59:09,395 INFO   Mw           = 18.0 mm
+2026-07-20 19:59:09,395 INFO   magDmin      = 4.0 mm
+2026-07-20 19:59:09,395 INFO   thet_deg     = 86.0 deg
+2026-07-20 19:59:09,397 INFO 
+Best design saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\best_optimized_design_v5.1.csv
+2026-07-20 19:59:09,411 INFO Optimization report saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\optimization_report.md
+2026-07-20 19:59:09,784 INFO Pareto front saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\pareto_front.png
+2026-07-20 19:59:10,305 INFO 3D Pareto front saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\pareto_3d.png
+2026-07-20 19:59:10,643 INFO Parallel coordinates plot saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\parallel_coordinates.png
+2026-07-20 19:59:10,916 INFO Convergence plot saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\convergence_history.png
+2026-07-20 19:59:10,971 INFO Sensitivity analysis saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\sensitivity_analysis.csv
+2026-07-20 19:59:10,973 INFO Top 3 Efficiency Drivers: Dr_in (+0.513), Bs1 (+0.318), Mw (+0.064)
+2026-07-20 19:59:10,974 INFO Top 3 TorqueRipple Drivers: Air_gap (+0.908), Bs2 (+0.685), Lamda (+0.586)
+2026-07-20 19:59:10,974 INFO 
+Optimization finished successfully. All outputs in: D:\Ai_Optimization_Of_Vshape_IPM_motor\output
+2026-07-20 19:59:25,906 INFO ============================================================
+2026-07-20 19:59:25,906 INFO V-Shape IPM Motor Optimizer v5.1
+2026-07-20 19:59:25,906 INFO Started: 2026-07-20 19:59:25
+2026-07-20 19:59:25,907 INFO ============================================================
+2026-07-20 19:59:25,907 INFO Random seed: not set (results will vary between runs)
+2026-07-20 19:59:26,071 INFO Loaded 19 design parameters from bounds file
+2026-07-20 19:59:26,071 WARNING scikit-learn not available. ML surrogate will use KNN-IDW (install sklearn for GP).
+2026-07-20 19:59:26,073 INFO Initialized fresh population of 6 individuals
+2026-07-20 19:59:26,073 INFO Configuration: Algorithm=GA | Mode=offline | ML=True | PopSize=6 | Gens=3
+2026-07-20 19:59:26,073 INFO --- Generation 1 / 3 ---
+2026-07-20 19:59:26,074 INFO   [NEW BEST] | Score: 64.1966 | Gen: 1
+2026-07-20 19:59:26,074 INFO Gen 1 | Best=64.1966 | Eff=94.2% | TR=30.1% | PD=0.301 | Cost=$120 | Stag=0/20
+2026-07-20 19:59:26,078 INFO --- Generation 2 / 3 ---
+2026-07-20 19:59:26,079 INFO   [NEW BEST] | Score: 66.5423 | Gen: 2
+2026-07-20 19:59:26,079 INFO Gen 2 | Best=66.5423 | Eff=94.0% | TR=27.6% | PD=0.321 | Cost=$140 | Stag=0/20
+2026-07-20 19:59:26,083 INFO --- Generation 3 / 3 ---
+2026-07-20 19:59:26,084 INFO   [NEW BEST] | Score: 70.2791 | Gen: 3
+2026-07-20 19:59:26,084 INFO Gen 3 | Best=70.2791 | Eff=95.3% | TR=25.1% | PD=0.320 | Cost=$118 | Stag=0/20
+2026-07-20 19:59:26,086 INFO 
+============================================================
+2026-07-20 19:59:26,087 INFO OPTIMIZATION COMPLETE
+2026-07-20 19:59:26,087 INFO ============================================================
+2026-07-20 19:59:26,087 INFO Best Score: 70.2791 (found at generation 3)
+2026-07-20 19:59:26,087 INFO 
+Best Design Parameters:
+2026-07-20 19:59:26,087 INFO   Dr_in        = 70.0 mm
+2026-07-20 19:59:26,087 INFO   Air_gap      = 0.6 mm
+2026-07-20 19:59:26,087 INFO   Lamda        = 0.9 
+2026-07-20 19:59:26,087 INFO   Bridge       = 1.1 mm
+2026-07-20 19:59:26,087 INFO   Hs0          = 1.7 mm
+2026-07-20 19:59:26,087 INFO   Hs1          = 1.1 mm
+2026-07-20 19:59:26,087 INFO   Hs2          = 20.0 mm
+2026-07-20 19:59:26,087 INFO   Bs0          = 1.5 mm
+2026-07-20 19:59:26,087 INFO   Bs1          = 3.5 mm
+2026-07-20 19:59:26,087 INFO   Bs2          = 6.0 mm
+2026-07-20 19:59:26,087 INFO   O1           = 13.0 mm
+2026-07-20 19:59:26,087 INFO   O2           = 2.0 mm
+2026-07-20 19:59:26,087 INFO   B1           = 3.2 mm
+2026-07-20 19:59:26,087 INFO   rib          = 2.0 mm
+2026-07-20 19:59:26,087 INFO   hrib         = 4.0 mm
+2026-07-20 19:59:26,087 INFO   Mt           = 4.0 mm
+2026-07-20 19:59:26,088 INFO   Mw           = 14.0 mm
+2026-07-20 19:59:26,088 INFO   magDmin      = 9.0 mm
+2026-07-20 19:59:26,088 INFO   thet_deg     = 4.0 deg
+2026-07-20 19:59:26,089 INFO 
+Best design saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\best_optimized_design_v5.1.csv
+2026-07-20 19:59:26,102 INFO Optimization report saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\optimization_report.md
+2026-07-20 19:59:26,558 INFO Pareto front saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\pareto_front.png
+2026-07-20 19:59:26,945 INFO 3D Pareto front saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\pareto_3d.png
+2026-07-20 19:59:27,244 INFO Parallel coordinates plot saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\parallel_coordinates.png
+2026-07-20 19:59:27,498 INFO Convergence plot saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\convergence_history.png
+2026-07-20 19:59:27,500 WARNING Insufficient data (18 samples) for sensitivity analysis. Need ‚â• 20.
+2026-07-20 19:59:27,502 INFO 
+Optimization finished successfully. All outputs in: D:\Ai_Optimization_Of_Vshape_IPM_motor\output
+2026-07-20 20:01:05,759 INFO ============================================================
+2026-07-20 20:01:05,759 INFO V-Shape IPM Motor Optimizer v5.1
+2026-07-20 20:01:05,759 INFO Started: 2026-07-20 20:01:05
+2026-07-20 20:01:05,759 INFO ============================================================
+2026-07-20 20:01:05,759 INFO Random seed: not set (results will vary between runs)
+2026-07-20 20:01:05,970 INFO Loaded 19 design parameters from bounds file
+2026-07-20 20:01:05,970 WARNING scikit-learn not available. ML surrogate will use KNN-IDW (install sklearn for GP).
+2026-07-20 20:01:05,973 INFO Initialized fresh population of 12 individuals
+2026-07-20 20:01:05,974 INFO Configuration: Algorithm=NSGA2 | Mode=offline | ML=True | PopSize=12 | Gens=30
+2026-07-20 20:01:05,974 INFO --- Generation 1 / 30 ---
+2026-07-20 20:01:05,974 INFO   [NEW BEST] | Score: 72.6735 | Gen: 1
+2026-07-20 20:01:05,975 INFO Gen 1 | Best=72.6735 | Eff=95.9% | TR=23.4% | PD=0.353 | Cost=$158 | Stag=0/20
+2026-07-20 20:01:05,981 INFO --- Generation 2 / 30 ---
+2026-07-20 20:01:05,982 INFO Gen 2 | Best=72.6735 | Eff=95.9% | TR=23.4% | PD=0.353 | Cost=$158 | Stag=1/20
+2026-07-20 20:01:05,989 INFO --- Generation 3 / 30 ---
+2026-07-20 20:01:05,991 INFO Gen 3 | Best=72.6735 | Eff=95.9% | TR=23.4% | PD=0.353 | Cost=$158 | Stag=2/20
+2026-07-20 20:01:05,997 INFO --- Generation 4 / 30 ---
+2026-07-20 20:01:05,999 INFO   [NEW BEST] | Score: 72.8100 | Gen: 4
+2026-07-20 20:01:06,000 INFO Gen 4 | Best=72.8100 | Eff=95.6% | TR=22.9% | PD=0.353 | Cost=$155 | Stag=0/20
+2026-07-20 20:01:06,006 INFO --- Generation 5 / 30 ---
+2026-07-20 20:01:06,008 INFO   [NEW BEST] | Score: 73.4776 | Gen: 5
+2026-07-20 20:01:06,008 INFO Gen 5 | Best=73.4776 | Eff=96.0% | TR=22.6% | PD=0.364 | Cost=$159 | Stag=0/20
+2026-07-20 20:01:06,016 INFO --- Generation 6 / 30 ---
+2026-07-20 20:01:06,018 INFO   [NEW BEST] | Score: 74.1866 | Gen: 6
+2026-07-20 20:01:06,018 INFO Gen 6 | Best=74.1866 | Eff=96.1% | TR=22.1% | PD=0.365 | Cost=$159 | Stag=0/20
+2026-07-20 20:01:06,025 INFO --- Generation 7 / 30 ---
+2026-07-20 20:01:06,027 INFO   [NEW BEST] | Score: 74.4844 | Gen: 7
+2026-07-20 20:01:06,027 INFO Gen 7 | Best=74.4844 | Eff=96.2% | TR=21.8% | PD=0.366 | Cost=$159 | Stag=0/20
+2026-07-20 20:01:06,037 INFO --- Generation 8 / 30 ---
+2026-07-20 20:01:06,039 INFO Gen 8 | Best=74.4722 | Eff=96.2% | TR=21.8% | PD=0.366 | Cost=$159 | Stag=1/20
+2026-07-20 20:01:06,046 INFO --- Generation 9 / 30 ---
+2026-07-20 20:01:06,048 INFO   [NEW BEST] | Score: 74.9532 | Gen: 9
+2026-07-20 20:01:06,048 INFO Gen 9 | Best=74.9532 | Eff=96.3% | TR=21.5% | PD=0.365 | Cost=$156 | Stag=0/20
+2026-07-20 20:01:06,056 INFO --- Generation 10 / 30 ---
+2026-07-20 20:01:06,058 INFO   [NEW BEST] | Score: 75.5460 | Gen: 10
+2026-07-20 20:01:06,058 INFO Gen 10 | Best=75.5460 | Eff=96.4% | TR=21.0% | PD=0.365 | Cost=$155 | Stag=0/20
+2026-07-20 20:01:06,065 INFO --- Generation 11 / 30 ---
+2026-07-20 20:01:06,068 INFO Gen 11 | Best=75.5460 | Eff=96.4% | TR=21.0% | PD=0.365 | Cost=$155 | Stag=1/20
+2026-07-20 20:01:06,075 INFO --- Generation 12 / 30 ---
+2026-07-20 20:01:06,077 INFO   [NEW BEST] | Score: 75.9906 | Gen: 12
+2026-07-20 20:01:06,077 INFO Gen 12 | Best=75.9906 | Eff=96.5% | TR=20.7% | PD=0.365 | Cost=$153 | Stag=0/20
+2026-07-20 20:01:06,085 INFO --- Generation 13 / 30 ---
+2026-07-20 20:01:06,087 INFO Gen 13 | Best=75.9906 | Eff=96.5% | TR=20.7% | PD=0.365 | Cost=$153 | Stag=1/20
+2026-07-20 20:01:06,094 INFO --- Generation 14 / 30 ---
+2026-07-20 20:01:06,096 INFO Gen 14 | Best=75.9906 | Eff=96.5% | TR=20.7% | PD=0.365 | Cost=$153 | Stag=2/20
+2026-07-20 20:01:06,105 INFO --- Generation 15 / 30 ---
+2026-07-20 20:01:06,107 INFO   [NEW BEST] | Score: 76.3475 | Gen: 15
+2026-07-20 20:01:06,107 INFO Gen 15 | Best=76.3475 | Eff=96.6% | TR=20.4% | PD=0.367 | Cost=$156 | Stag=0/20
+2026-07-20 20:01:06,115 INFO --- Generation 16 / 30 ---
+2026-07-20 20:01:06,118 INFO   [NEW BEST] | Score: 76.9041 | Gen: 16
+2026-07-20 20:01:06,118 INFO Gen 16 | Best=76.9041 | Eff=96.7% | TR=19.9% | PD=0.368 | Cost=$157 | Stag=0/20
+2026-07-20 20:01:06,125 INFO --- Generation 17 / 30 ---
+2026-07-20 20:01:06,127 INFO Gen 17 | Best=76.9041 | Eff=96.7% | TR=19.9% | PD=0.368 | Cost=$157 | Stag=1/20
+2026-07-20 20:01:06,136 INFO --- Generation 18 / 30 ---
+2026-07-20 20:01:06,138 INFO Gen 18 | Best=76.9041 | Eff=96.7% | TR=19.9% | PD=0.368 | Cost=$157 | Stag=2/20
+2026-07-20 20:01:06,145 INFO --- Generation 19 / 30 ---
+2026-07-20 20:01:06,148 INFO   [NEW BEST] | Score: 77.3216 | Gen: 19
+2026-07-20 20:01:06,148 INFO Gen 19 | Best=77.3216 | Eff=96.8% | TR=19.6% | PD=0.369 | Cost=$158 | Stag=0/20
+2026-07-20 20:01:06,157 INFO --- Generation 20 / 30 ---
+2026-07-20 20:01:06,159 INFO Gen 20 | Best=77.3216 | Eff=96.8% | TR=19.6% | PD=0.369 | Cost=$158 | Stag=1/20
+2026-07-20 20:01:06,168 INFO --- Generation 21 / 30 ---
+2026-07-20 20:01:06,170 INFO   [NEW BEST] | Score: 77.6347 | Gen: 21
+2026-07-20 20:01:06,170 INFO Gen 21 | Best=77.6347 | Eff=96.9% | TR=19.4% | PD=0.370 | Cost=$159 | Stag=0/20
+2026-07-20 20:01:06,178 INFO --- Generation 22 / 30 ---
+2026-07-20 20:01:06,181 INFO Gen 22 | Best=77.5564 | Eff=96.9% | TR=19.4% | PD=0.370 | Cost=$159 | Stag=1/20
+2026-07-20 20:01:06,200 INFO --- Generation 23 / 30 ---
+2026-07-20 20:01:06,203 INFO   [NEW BEST] | Score: 77.8108 | Gen: 23
+2026-07-20 20:01:06,203 INFO Gen 23 | Best=77.8108 | Eff=96.9% | TR=19.2% | PD=0.370 | Cost=$159 | Stag=0/20
+2026-07-20 20:01:06,211 INFO --- Generation 24 / 30 ---
+2026-07-20 20:01:06,215 INFO   [NEW BEST] | Score: 77.8736 | Gen: 24
+2026-07-20 20:01:06,215 INFO Gen 24 | Best=77.8736 | Eff=96.9% | TR=19.2% | PD=0.370 | Cost=$159 | Stag=0/20
+2026-07-20 20:01:06,223 INFO --- Generation 25 / 30 ---
+2026-07-20 20:01:06,226 INFO   [NEW BEST] | Score: 78.0799 | Gen: 25
+2026-07-20 20:01:06,226 INFO Gen 25 | Best=78.0799 | Eff=97.0% | TR=19.0% | PD=0.371 | Cost=$160 | Stag=0/20
+2026-07-20 20:01:06,238 INFO --- Generation 26 / 30 ---
+2026-07-20 20:01:06,240 INFO   [NEW BEST] | Score: 78.2347 | Gen: 26
+2026-07-20 20:01:06,241 INFO Gen 26 | Best=78.2347 | Eff=97.0% | TR=18.9% | PD=0.371 | Cost=$160 | Stag=0/20
+2026-07-20 20:01:06,250 INFO --- Generation 27 / 30 ---
+2026-07-20 20:01:06,253 INFO Gen 27 | Best=78.2347 | Eff=97.0% | TR=18.9% | PD=0.371 | Cost=$160 | Stag=1/20
+2026-07-20 20:01:06,262 INFO --- Generation 28 / 30 ---
+2026-07-20 20:01:06,265 INFO Gen 28 | Best=78.2347 | Eff=97.0% | TR=18.9% | PD=0.371 | Cost=$160 | Stag=2/20
+2026-07-20 20:01:06,274 INFO --- Generation 29 / 30 ---
+2026-07-20 20:01:06,276 INFO Gen 29 | Best=78.2347 | Eff=97.0% | TR=18.9% | PD=0.371 | Cost=$160 | Stag=3/20
+2026-07-20 20:01:06,285 INFO --- Generation 30 / 30 ---
+2026-07-20 20:01:06,288 INFO   [NEW BEST] | Score: 78.3508 | Gen: 30
+2026-07-20 20:01:06,289 INFO Gen 30 | Best=78.3508 | Eff=97.0% | TR=18.8% | PD=0.371 | Cost=$160 | Stag=0/20
+2026-07-20 20:01:06,298 INFO 
+============================================================
+2026-07-20 20:01:06,298 INFO OPTIMIZATION COMPLETE
+2026-07-20 20:01:06,298 INFO ============================================================
+2026-07-20 20:01:06,298 INFO Best Score: 78.3508 (found at generation 30)
+2026-07-20 20:01:06,298 INFO 
+Best Design Parameters:
+2026-07-20 20:01:06,299 INFO   Dr_in        = 90.0 mm
+2026-07-20 20:01:06,299 INFO   Air_gap      = 0.5 mm
+2026-07-20 20:01:06,299 INFO   Lamda        = 1.0 
+2026-07-20 20:01:06,299 INFO   Bridge       = 1.0 mm
+2026-07-20 20:01:06,299 INFO   Hs0          = 1.0 mm
+2026-07-20 20:01:06,299 INFO   Hs1          = 1.1 mm
+2026-07-20 20:01:06,299 INFO   Hs2          = 22.0 mm
+2026-07-20 20:01:06,300 INFO   Bs0          = 1.5 mm
+2026-07-20 20:01:06,300 INFO   Bs1          = 6.5 mm
+2026-07-20 20:01:06,300 INFO   Bs2          = 12.0 mm
+2026-07-20 20:01:06,300 INFO   O1           = 5.0 mm
+2026-07-20 20:01:06,300 INFO   O2           = 3.5 mm
+2026-07-20 20:01:06,301 INFO   B1           = 5.2 mm
+2026-07-20 20:01:06,301 INFO   rib          = 5.0 mm
+2026-07-20 20:01:06,301 INFO   hrib         = 2.5 mm
+2026-07-20 20:01:06,301 INFO   Mt           = 6.0 mm
+2026-07-20 20:01:06,301 INFO   Mw           = 28.0 mm
+2026-07-20 20:01:06,301 INFO   magDmin      = 1.0 mm
+2026-07-20 20:01:06,301 INFO   thet_deg     = 19.0 deg
+2026-07-20 20:01:06,303 INFO 
+Best design saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\best_optimized_design_v5.1.csv
+2026-07-20 20:01:06,320 INFO Optimization report saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\optimization_report.md
+2026-07-20 20:01:06,712 INFO Pareto front saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\pareto_front.png
+2026-07-20 20:01:07,099 INFO 3D Pareto front saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\pareto_3d.png
+2026-07-20 20:01:07,455 INFO Parallel coordinates plot saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\parallel_coordinates.png
+2026-07-20 20:01:07,721 INFO Convergence plot saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\convergence_history.png
+2026-07-20 20:01:07,791 INFO Sensitivity analysis saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\sensitivity_analysis.csv
+2026-07-20 20:01:07,793 INFO Top 3 Efficiency Drivers: Dr_in (+0.451), Mw (+0.275), Lamda (+0.214)
+2026-07-20 20:01:07,794 INFO Top 3 TorqueRipple Drivers: Air_gap (+0.784), Bs0 (+0.645), Hs0 (+0.376)
+2026-07-20 20:01:07,794 INFO 
+Optimization finished successfully. All outputs in: D:\Ai_Optimization_Of_Vshape_IPM_motor\output
+2026-07-20 20:03:34,858 INFO ============================================================
+2026-07-20 20:03:34,859 INFO V-Shape IPM Motor Optimizer v5.1
+2026-07-20 20:03:34,859 INFO Started: 2026-07-20 20:03:34
+2026-07-20 20:03:34,859 INFO ============================================================
+2026-07-20 20:03:34,859 INFO Random seed: not set (results will vary between runs)
+2026-07-20 20:03:35,025 INFO Loaded 19 design parameters from bounds file
+2026-07-20 20:03:35,025 WARNING scikit-learn not available. ML surrogate will use KNN-IDW (install sklearn for GP).
+2026-07-20 20:03:35,029 INFO Initialized fresh population of 12 individuals
+2026-07-20 20:03:35,029 INFO Configuration: Algorithm=NSGA2 | Mode=offline | ML=True | PopSize=12 | Gens=30
+2026-07-20 20:03:35,029 INFO --- Generation 1 / 30 ---
+2026-07-20 20:03:35,031 INFO   [NEW BEST] | Score: 65.5856 | Gen: 1
+2026-07-20 20:03:35,031 INFO Gen 1 | Best=65.5856 | Eff=94.6% | TR=29.1% | PD=0.313 | Cost=$135 | Stag=0/20
+2026-07-20 20:03:35,040 INFO --- Generation 2 / 30 ---
+2026-07-20 20:03:35,041 INFO   [NEW BEST] | Score: 66.8441 | Gen: 2
+2026-07-20 20:03:35,041 INFO Gen 2 | Best=66.8441 | Eff=95.0% | TR=28.3% | PD=0.328 | Cost=$121 | Stag=0/20
+2026-07-20 20:03:35,048 INFO --- Generation 3 / 30 ---
+2026-07-20 20:03:35,050 INFO Gen 3 | Best=66.8441 | Eff=95.0% | TR=28.3% | PD=0.328 | Cost=$121 | Stag=1/20
+2026-07-20 20:03:35,059 INFO --- Generation 4 / 30 ---
+2026-07-20 20:03:35,061 INFO Gen 4 | Best=66.8441 | Eff=95.0% | TR=28.3% | PD=0.328 | Cost=$121 | Stag=2/20
+2026-07-20 20:03:35,069 INFO --- Generation 5 / 30 ---
+2026-07-20 20:03:35,071 INFO   [NEW BEST] | Score: 66.8764 | Gen: 5
+2026-07-20 20:03:35,071 INFO Gen 5 | Best=66.8764 | Eff=94.0% | TR=27.2% | PD=0.338 | Cost=$141 | Stag=0/20
+2026-07-20 20:03:35,079 INFO --- Generation 6 / 30 ---
+2026-07-20 20:03:35,081 INFO   [NEW BEST] | Score: 68.0985 | Gen: 6
+2026-07-20 20:03:35,081 INFO Gen 6 | Best=68.0985 | Eff=94.5% | TR=26.5% | PD=0.345 | Cost=$141 | Stag=0/20
+2026-07-20 20:03:35,089 INFO --- Generation 7 / 30 ---
+2026-07-20 20:03:35,091 INFO   [NEW BEST] | Score: 69.2542 | Gen: 7
+2026-07-20 20:03:35,092 INFO Gen 7 | Best=69.2542 | Eff=94.8% | TR=25.7% | PD=0.347 | Cost=$141 | Stag=0/20
+2026-07-20 20:03:35,099 INFO --- Generation 8 / 30 ---
+2026-07-20 20:03:35,101 INFO   [NEW BEST] | Score: 69.9972 | Gen: 8
+2026-07-20 20:03:35,101 INFO Gen 8 | Best=69.9972 | Eff=95.0% | TR=25.2% | PD=0.349 | Cost=$141 | Stag=0/20
+2026-07-20 20:03:35,108 INFO --- Generation 9 / 30 ---
+2026-07-20 20:03:35,110 INFO   [NEW BEST] | Score: 70.8623 | Gen: 9
+2026-07-20 20:03:35,110 INFO Gen 9 | Best=70.8623 | Eff=95.2% | TR=24.5% | PD=0.350 | Cost=$140 | Stag=0/20
+2026-07-20 20:03:35,119 INFO --- Generation 10 / 30 ---
+2026-07-20 20:03:35,121 INFO Gen 10 | Best=70.8623 | Eff=95.2% | TR=24.5% | PD=0.350 | Cost=$140 | Stag=1/20
+2026-07-20 20:03:35,129 INFO --- Generation 11 / 30 ---
+2026-07-20 20:03:35,133 INFO   [NEW BEST] | Score: 71.8288 | Gen: 11
+2026-07-20 20:03:35,133 INFO Gen 11 | Best=71.8288 | Eff=95.4% | TR=23.7% | PD=0.352 | Cost=$140 | Stag=0/20
+2026-07-20 20:03:35,142 INFO --- Generation 12 / 30 ---
+2026-07-20 20:03:35,144 INFO Gen 12 | Best=71.8288 | Eff=95.4% | TR=23.7% | PD=0.352 | Cost=$140 | Stag=1/20
+2026-07-20 20:03:35,154 INFO --- Generation 13 / 30 ---
+2026-07-20 20:03:35,156 INFO Gen 13 | Best=71.8288 | Eff=95.4% | TR=23.7% | PD=0.352 | Cost=$140 | Stag=2/20
+2026-07-20 20:03:35,164 INFO --- Generation 14 / 30 ---
+2026-07-20 20:03:35,167 INFO Gen 14 | Best=71.8288 | Eff=95.4% | TR=23.7% | PD=0.352 | Cost=$140 | Stag=3/20
+2026-07-20 20:03:35,180 INFO --- Generation 15 / 30 ---
+2026-07-20 20:03:35,184 INFO   [NEW BEST] | Score: 72.0907 | Gen: 15
+2026-07-20 20:03:35,184 INFO Gen 15 | Best=72.0907 | Eff=96.1% | TR=24.1% | PD=0.343 | Cost=$130 | Stag=0/20
+2026-07-20 20:03:35,192 INFO --- Generation 16 / 30 ---
+2026-07-20 20:03:35,195 INFO Gen 16 | Best=71.9512 | Eff=96.1% | TR=24.2% | PD=0.343 | Cost=$131 | Stag=1/20
+2026-07-20 20:03:35,203 INFO --- Generation 17 / 30 ---
+2026-07-20 20:03:35,206 INFO   [NEW BEST] | Score: 72.4962 | Gen: 17
+2026-07-20 20:03:35,206 INFO Gen 17 | Best=72.4962 | Eff=96.2% | TR=23.8% | PD=0.345 | Cost=$132 | Stag=0/20
+2026-07-20 20:03:35,214 INFO --- Generation 18 / 30 ---
+2026-07-20 20:03:35,218 INFO   [NEW BEST] | Score: 72.9049 | Gen: 18
+2026-07-20 20:03:35,218 INFO Gen 18 | Best=72.9049 | Eff=96.3% | TR=23.5% | PD=0.346 | Cost=$132 | Stag=0/20
+2026-07-20 20:03:35,226 INFO --- Generation 19 / 30 ---
+2026-07-20 20:03:35,229 INFO   [NEW BEST] | Score: 72.9449 | Gen: 19
+2026-07-20 20:03:35,229 INFO Gen 19 | Best=72.9449 | Eff=95.7% | TR=22.9% | PD=0.354 | Cost=$139 | Stag=0/20
+2026-07-20 20:03:35,237 INFO --- Generation 20 / 30 ---
+2026-07-20 20:03:35,240 INFO   [NEW BEST] | Score: 73.4331 | Gen: 20
+2026-07-20 20:03:35,240 INFO Gen 20 | Best=73.4331 | Eff=95.8% | TR=22.5% | PD=0.355 | Cost=$139 | Stag=0/20
+2026-07-20 20:03:35,248 INFO --- Generation 21 / 30 ---
+2026-07-20 20:03:35,252 INFO   [NEW BEST] | Score: 73.9325 | Gen: 21
+2026-07-20 20:03:35,253 INFO Gen 21 | Best=73.9325 | Eff=95.9% | TR=22.1% | PD=0.365 | Cost=$146 | Stag=0/20
+2026-07-20 20:03:35,262 INFO --- Generation 22 / 30 ---
+2026-07-20 20:03:35,265 INFO   [NEW BEST] | Score: 73.9611 | Gen: 22
+2026-07-20 20:03:35,265 INFO Gen 22 | Best=73.9611 | Eff=95.9% | TR=22.0% | PD=0.358 | Cost=$140 | Stag=0/20
+2026-07-20 20:03:35,273 INFO --- Generation 23 / 30 ---
+2026-07-20 20:03:35,275 INFO   [NEW BEST] | Score: 74.7284 | Gen: 23
+2026-07-20 20:03:35,276 INFO Gen 23 | Best=74.7284 | Eff=96.0% | TR=21.4% | PD=0.360 | Cost=$142 | Stag=0/20
+2026-07-20 20:03:35,284 INFO --- Generation 24 / 30 ---
+2026-07-20 20:03:35,286 INFO   [NEW BEST] | Score: 74.9908 | Gen: 24
+2026-07-20 20:03:35,287 INFO Gen 24 | Best=74.9908 | Eff=96.2% | TR=21.3% | PD=0.357 | Cost=$139 | Stag=0/20
+2026-07-20 20:03:35,295 INFO --- Generation 25 / 30 ---
+2026-07-20 20:03:35,298 INFO Gen 25 | Best=74.9908 | Eff=96.2% | TR=21.3% | PD=0.357 | Cost=$139 | Stag=1/20
+2026-07-20 20:03:35,307 INFO --- Generation 26 / 30 ---
+2026-07-20 20:03:35,310 INFO   [NEW BEST] | Score: 75.2334 | Gen: 26
+2026-07-20 20:03:35,310 INFO Gen 26 | Best=75.2334 | Eff=96.1% | TR=21.0% | PD=0.369 | Cost=$148 | Stag=0/20
+2026-07-20 20:03:35,319 INFO --- Generation 27 / 30 ---
+2026-07-20 20:03:35,322 INFO   [NEW BEST] | Score: 75.6077 | Gen: 27
+2026-07-20 20:03:35,323 INFO Gen 27 | Best=75.6077 | Eff=96.6% | TR=21.2% | PD=0.356 | Cost=$141 | Stag=0/20
+2026-07-20 20:03:35,331 INFO --- Generation 28 / 30 ---
+2026-07-20 20:03:35,334 INFO   [NEW BEST] | Score: 76.2643 | Gen: 28
+2026-07-20 20:03:35,334 INFO Gen 28 | Best=76.2643 | Eff=96.7% | TR=20.6% | PD=0.359 | Cost=$144 | Stag=0/20
+2026-07-20 20:03:35,343 INFO --- Generation 29 / 30 ---
+2026-07-20 20:03:35,346 INFO Gen 29 | Best=75.7118 | Eff=96.6% | TR=21.0% | PD=0.359 | Cost=$146 | Stag=1/20
+2026-07-20 20:03:35,356 INFO --- Generation 30 / 30 ---
+2026-07-20 20:03:35,359 INFO   [NEW BEST] | Score: 76.7568 | Gen: 30
+2026-07-20 20:03:35,359 INFO Gen 30 | Best=76.7568 | Eff=96.8% | TR=20.2% | PD=0.361 | Cost=$146 | Stag=0/20
+2026-07-20 20:03:35,368 INFO 
+============================================================
+2026-07-20 20:03:35,368 INFO OPTIMIZATION COMPLETE
+2026-07-20 20:03:35,369 INFO ============================================================
+2026-07-20 20:03:35,369 INFO Best Score: 76.7568 (found at generation 30)
+2026-07-20 20:03:35,369 INFO 
+Best Design Parameters:
+2026-07-20 20:03:35,369 INFO   Dr_in        = 90.0 mm
+2026-07-20 20:03:35,369 INFO   Air_gap      = 0.5 mm
+2026-07-20 20:03:35,369 INFO   Lamda        = 0.8 
+2026-07-20 20:03:35,369 INFO   Bridge       = 1.1 mm
+2026-07-20 20:03:35,370 INFO   Hs0          = 1.1 mm
+2026-07-20 20:03:35,370 INFO   Hs1          = 1.0 mm
+2026-07-20 20:03:35,370 INFO   Hs2          = 18.0 mm
+2026-07-20 20:03:35,370 INFO   Bs0          = 1.5 mm
+2026-07-20 20:03:35,370 INFO   Bs1          = 6.0 mm
+2026-07-20 20:03:35,370 INFO   Bs2          = 8.0 mm
+2026-07-20 20:03:35,370 INFO   O1           = 3.0 mm
+2026-07-20 20:03:35,370 INFO   O2           = 7.0 mm
+2026-07-20 20:03:35,370 INFO   B1           = 3.7 mm
+2026-07-20 20:03:35,371 INFO   rib          = 4.0 mm
+2026-07-20 20:03:35,371 INFO   hrib         = 2.0 mm
+2026-07-20 20:03:35,371 INFO   Mt           = 5.6 mm
+2026-07-20 20:03:35,371 INFO   Mw           = 26.0 mm
+2026-07-20 20:03:35,371 INFO   magDmin      = 2.0 mm
+2026-07-20 20:03:35,371 INFO   thet_deg     = 40.0 deg
+2026-07-20 20:03:35,372 INFO 
+Best design saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\best_optimized_design_v5.1.csv
+2026-07-20 20:03:35,387 INFO Optimization report saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\optimization_report.md
+2026-07-20 20:03:35,725 INFO Pareto front saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\pareto_front.png
+2026-07-20 20:03:36,100 INFO 3D Pareto front saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\pareto_3d.png
+2026-07-20 20:03:36,492 INFO Parallel coordinates plot saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\parallel_coordinates.png
+2026-07-20 20:03:36,738 INFO Convergence plot saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\convergence_history.png
+2026-07-20 20:03:36,798 INFO Sensitivity analysis saved to D:\Ai_Optimization_Of_Vshape_IPM_motor\output\sensitivity_analysis.csv
+2026-07-20 20:03:36,800 INFO Top 3 Efficiency Drivers: Dr_in (+0.702), O2 (+0.548), hrib (+0.146)
+2026-07-20 20:03:36,801 INFO Top 3 TorqueRipple Drivers: Air_gap (+0.841), Hs2 (+0.471), rib (+0.467)
+2026-07-20 20:03:36,801 INFO 
+Optimization finished successfully. All outputs in: D:\Ai_Optimization_Of_Vshape_IPM_motor\output
