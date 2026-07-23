@@ -90,9 +90,9 @@ sequenceDiagram
 
 | Thành phần | File chính | Nhiệm vụ |
 |---|---|---|
-| **Python AI Agent** | `Python_code/motor_optimizer_ver5.1.py` | Tạo, đánh giá và chọn lọc các thiết kế |
+| **Python AI Agent** | `motor_optimizer_ver5.1_remote.py` | Tạo, đánh giá và chọn lọc các thiết kế (Chạy phẳng ở thư mục gốc) |
 | **MATLAB Bridge** | `Ai_optimization.m` | Kết nối Python với Ansys Maxwell |
-| **Ansys Maxwell FEM** | `input/Matlab_Ai_Optimization.aedt` | Chạy mô phỏng điện từ thực tế |
+| **Ansys Maxwell FEM** | `Matlab_Ai_Optimization.aedt` | Chạy mô phỏng điện từ thực tế (Đặt ở thư mục gốc) |
 
 ---
 

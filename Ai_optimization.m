@@ -9,9 +9,10 @@ clc;
 
 script_dir = fileparts(mfilename('fullpath'));
 
-dataFile_name = "input/Ai_Optimization_Bounds.xlsx";
+dataFile_name = "Ai_Optimization_Bounds.xlsx";
 dataFilePath = fullfile(script_dir, dataFile_name);
 data = readtable(dataFilePath, 'VariableNamingRule', 'preserve');
+
 names = data.Parameter;
 lLims = data.Lower_Limit;
 uLims = data.Upper_Limit;
@@ -20,7 +21,7 @@ units = data.Unit;
 
 % Create parameter value table (Initial values I have been using)
 % paramValues = [90, 1, 0.9, 1.5, 1.1899, 1.5, 18.07656, 2.1128, 6.90142, 10.88076, 5.4, 6, 3.5, 2, 2.4, 5.282, 31.80195, 10];
-paramValuesFile_name = "input/Ai_Optimization_ParamValues.xlsx";
+paramValuesFile_name = "Ai_Optimization_ParamValues.xlsx";
 paramValuesFilePath = fullfile(script_dir, paramValuesFile_name);
 paramValues = readtable(paramValuesFilePath, 'VariableNamingRule', 'preserve');
 
@@ -36,7 +37,7 @@ oDesktop.RestoreWindow; % Brings the Ansys window up so you can see it
 
 % Get Maxwell project path
 project_name = 'Matlab_Ai_Optimization';
-full_project_file = fullfile(script_dir, "input", project_name+".aedt");
+full_project_file = fullfile(script_dir, project_name+".aedt");
 
 % Open file. If open, grab active instead:
 try
@@ -78,7 +79,7 @@ for iteration = 1:size(paramValues, 1)
     
     % Export Data
     oModule = oDesign.GetModule('ReportSetup');
-    output_csv_file = fullfile(script_dir, "output", ['output_vars_iter_', num2str(iteration), '.csv']);
+    output_csv_file = fullfile(script_dir, ['output_vars_iter_', num2str(iteration), '.csv']);
     invoke(oModule, 'ExportToFile', 'OutputVariablesTable', output_csv_file);
     
     % Read the table

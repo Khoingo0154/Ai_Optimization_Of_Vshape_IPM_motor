@@ -27,3 +27,8 @@ output/*.pkl
 output/output_vars_iter_*.csv
 output/simulation_history.csv
 *.log
+*.pkl
+output_vars_iter_*.csv
+simulation_history.csv
+log_history.csv
+

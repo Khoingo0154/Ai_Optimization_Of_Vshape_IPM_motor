@@ -26,8 +26,9 @@ Ai_Optimization_Of_Vshape_IPM_motor/
 │   ├── optimization_report.md          ← Automatically generated Markdown summary report
 │   └── optimizer.log                   ← Per-run log output
 │
-├── Python_code/                        ← Python source code
-│   ├── motor_optimizer_ver5.1.py       ← Production-grade script (NSGA-II, GP ML, Unit tests, 4 Plots)
+├── motor_optimizer_ver5.1_remote.py ← Primary Production-grade script (Flat root-level execution)
+├── Python_code/                        ← Python source code archive
+│   ├── motor_optimizer_ver5.1.py       ← Standard v5.1 script (Subdirectory input/output)
 │   ├── motor_optimizer_ver5.py         ← Integrated GA/NSGA-II optimizer (v5)
 │   ├── motor_optimizer_ver2.py         ← Standard GA baseline (v2)
 │   ├── motor_optimizer_ver3.py / ver4.py← Experimental stubs (v3 & v4)
@@ -42,7 +43,11 @@ Ai_Optimization_Of_Vshape_IPM_motor/
 
 ## Optimizer Versions
 
-### Version 5.1 (Production-Grade Upgrade - Recommended)
+### Version 5.1 Remote (Production-Grade Primary Script - Recommended)
+- **Flat Root-Level I/O**: Reads and writes all configuration (Excel bounds), simulation history, reports, and plot images directly in the root folder.
+- **Custom MATLAB Path (`--matlab-exe`)**: Supports passing explicit path to `matlab.exe` (e.g. `--matlab-exe "C:\MATLAB\R2023b\bin\matlab.exe"`).
+- **Engineer Manual Override (`--interactive` / `--override-csv`)**: Allows engineers to interactively inspect or override parameters post-optimization, validating constraints and generating comparison tables (`engineer_manual_design.csv`).
+- **Strict Error Handling**: Immediately halts execution with clear error logs if MATLAB or Ansys simulation fails.
 - **Complete NSGA-II Engine**: Dedicated reproduction using binary tournament on Pareto rank + crowding distance.
 - **Gaussian Process & Standardized ML Surrogate**: Uses `sklearn` GaussianProcessRegressor with RBF kernel and standardized feature vectors $[0, 1]$, with auto-fallback to KNN-IDW.
 - **Built-in Unit Tests (`--test`)**: 7 automated unit tests verifying constraints, dominance sorting, crowding distance, repair logic, and scoring without full optimization runs.
@@ -65,19 +70,19 @@ Ai_Optimization_Of_Vshape_IPM_motor/
 
 ## Running the Optimizer
 
-### Built-in Unit Testing (Version 5.1)
+### Built-in Unit Testing
 ```bash
-python Python_code/motor_optimizer_ver5.1.py --test
+python motor_optimizer_ver5.1_remote.py --test
 ```
 
 ### Quick Offline Optimization with NSGA-II & Full Visualizations
 ```bash
-python Python_code/motor_optimizer_ver5.1.py --algorithm nsga2 --pop-size 12 --generations 30 --mode offline --plot-all
+python motor_optimizer_ver5.1_remote.py --algorithm nsga2 --pop-size 12 --generations 30 --mode offline --plot-all
 ```
 
 ### Full Ansys Maxwell FEM Simulation Run (via MATLAB)
 ```bash
-python Python_code/motor_optimizer_ver5.1.py --algorithm nsga2 --pop-size 10 --generations 100 --mode matlab --plot-all
+python motor_optimizer_ver5.1_remote.py --algorithm nsga2 --pop-size 8 --generations 10 --mode matlab --matlab-exe "C:\MATLAB\R2023b\bin\matlab.exe" --plot-all
 ```
 
 ---

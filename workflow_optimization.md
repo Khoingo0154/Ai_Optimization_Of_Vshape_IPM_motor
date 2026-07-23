@@ -1,6 +1,6 @@
-# V-Shape IPM Motor Optimization Workflow (v5.1)
+# V-Shape IPM Motor Optimization Workflow (v5.1 Remote)
 
-This document describes the workflow of the Python-based AI Optimization Agent implemented in [motor_optimizer_ver5.1.py](file:///d:/Ai_Optimization_Of_Vshape_IPM_motor/Python_code/motor_optimizer_ver5.1.py). It acts as a closed-loop system coordinating variables, constraints, genetic operations (Standard GA & NSGA-II), standardized Gaussian Process / KNN-IDW hybrid surrogates, MATLAB simulation interfaces, sensitivity analysis, 4-plot multi-dimensional visualizations, built-in unit tests, and automated Markdown report generation.
+This document describes the workflow of the Python-based AI Optimization Agent implemented in [motor_optimizer_ver5.1_remote.py](file:///d:/Ai_Optimization_Of_Vshape_IPM_motor/motor_optimizer_ver5.1_remote.py). It acts as a closed-loop system coordinating variables, constraints, genetic operations (Standard GA & NSGA-II), standardized Gaussian Process / KNN-IDW hybrid surrogates, MATLAB simulation interfaces, sensitivity analysis, 4-plot multi-dimensional visualizations, built-in unit tests, and automated Markdown report generation, operating on flat root-level files.
 
 ---
 
@@ -12,7 +12,7 @@ The optimization process operates in an evolutionary loop, using either a physic
 graph TD
     A[Start / --test / --resume] --> B{Unit Test Flag --test?}
     B -- Yes --> C[Run 7 Built-in Unit Tests & Exit]
-    B -- No --> D[Load Bounds & Target Variables]
+    B -- No --> D[Load Bounds & Target Variables from root]
     D --> E{Resume Checkpoint?}
     E -- Yes --> F[Load state from optimizer_state.pkl]
     E -- No --> G[Initialize Population within Bounds & Constraints]
@@ -22,9 +22,9 @@ graph TD
     I --> J[Multi-Strategy Smart Repair & Enforce 4 Geometric Constraints]
     J --> K{Evaluation Mode?}
     K -- offline --> L[Standardized GP / KNN-IDW Hybrid ML Surrogate]
-    K -- matlab --> M[Write variables to Ai_Optimization_ParamValues.xlsx]
+    K -- matlab --> M[Write variables to Ai_Optimization_ParamValues.xlsx in root]
     M --> N[Invoke Ansys Maxwell via MATLAB ActiveX]
-    N --> O[Parse output CSVs]
+    N --> O[Parse output CSVs from root]
     L --> P[Evaluate Multi-Objective Scores & Metrics]
     O --> P
     P --> Q{Algorithm Selection?}
@@ -46,7 +46,7 @@ graph TD
 ## 2. Key Components
 
 ### A. Design Boundaries & Canonical Ordering
-*   **Variable Schema**: Loaded dynamically from [Ai_Optimization_Bounds.xlsx](file:///d:/Ai_Optimization_Of_Vshape_IPM_motor/input/Ai_Optimization_Bounds.xlsx).
+*   **Variable Schema**: Loaded dynamically from [Ai_Optimization_Bounds.xlsx](file:///d:/Ai_Optimization_Of_Vshape_IPM_motor/Ai_Optimization_Bounds.xlsx).
 *   **Ordering Guarantee**: To prevent mismatched coordinates during batch execution, variables are stored in an ordered sequence `PARAM_ORDER` which coordinates Excel writes, MATLAB reads, and ML feature matrices.
 
 ### B. Geometrical Constraints & Smart Repair
