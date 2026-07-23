@@ -310,7 +310,9 @@ def physics_surrogate(ind: dict) -> Dict[str, float]:
     pwr_mw = (mw - 25.0) * 0.005
     power_density = float(np.clip(pwr_base + pwr_lamda + pwr_mw, 0.15, 0.55))
     
-    stator_vol = (DS_OUT**2 - (L_STK/lamda)**2) * L_STK * 1e-6
+    # stator_vol = (DS_OUT**2 - (L_STK/lamda)**2) * L_STK * 1e-6
+    stator_vol = (math.pi / 4.0) * (DS_OUT**2 - (L_STK/lamda)**2) * L_STK * 1e-6
+    
     magnet_vol = 2.0 * mt * mw * L_STK * 6.0 * 1e-6
     cost = float(np.clip(stator_vol * 15.0 + magnet_vol * 120.0, 50.0, 300.0))
     
@@ -987,6 +989,8 @@ def _parse_csv_outputs(uncached_population: List[Dict], output_dir: Path, score_
                 pwr_col = next((c for c in df.columns if "PwrDens" in c or "PowerDensity" in c or "Power" in c), None)
                 
                 eff = float(df[eff_col].iloc[-10:].mean()) if eff_col else 90.0
+                
+                
                 tr = float(df[tr_col].iloc[-10:].mean()) if tr_col else 15.0
                 cost = float(df[cost_col].iloc[-1]) if cost_col else 100.0
                 pwr = float(df[pwr_col].iloc[-1]) if pwr_col else 0.3
