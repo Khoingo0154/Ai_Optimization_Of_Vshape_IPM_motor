@@ -715,7 +715,7 @@ def run_ansys_direct(population: List[Dict],
                       root_dir: Path, 
                       output_dir: Path, 
                       ansys_version: str = "2023.2",
-                      non_graphical: bool = True) -> bool:
+                      non_graphical: bool = False) -> bool:
     """Run direct Ansys Maxwell 3D simulations via PyAEDT or win32com ActiveX (No MATLAB required).
     
     Args:
@@ -890,7 +890,7 @@ def evaluate_population(population: List[Dict],
                         use_ml: bool = True,
                         matlab_exe: str = "matlab",
                         eval_cache: Optional[Dict[tuple, Dict]] = None,
-                        non_graphical: bool = True) -> List[Dict]:
+                        non_graphical: bool = False) -> List[Dict]:
     """Evaluate population with full deduplication caching.
     
     Supports modes:
@@ -1619,7 +1619,7 @@ Examples:
     parser.add_argument("--resume", action="store_true", help="Resume from checkpoint")
     parser.add_argument("--matlab-exe", type=str, default=r"C:\MATLAB\R2023b\bin\matlab.exe", help="Path to MATLAB executable")
     parser.add_argument("--ansys-version", type=str, default="2023.2", help="Ansys Desktop version string for PyAEDT")
-    parser.add_argument("--non-graphical", action="store_true", default=True, help="Run Ansys Maxwell in background headless mode")
+    parser.add_argument("--non-graphical", action="store_true", help="Run Ansys Maxwell in background headless mode")
     
     # Score weights
     parser.add_argument("--w-eff", type=float, default=1.0, help="Efficiency weight (default: 1.0)")
