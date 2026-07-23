@@ -91,6 +91,42 @@ def _make_ind_key(ind: dict) -> tuple:
     """
     return tuple(sorted((str(k), round(float(v), 6)) for k, v in ind.items() if not str(k).startswith('_')))
 
+
+def setup_logger(log_filename="run_log.txt"):
+    """
+    Cấu hình logger ghi đồng thời ra console và file.
+    Không làm thay đổi logic chạy, chỉ bổ sung quan sát.
+    """
+    # Sử dụng root logger để tất cả các hàm logging.info, logging.warning...
+    # của script đều được xử lý bởi các handlers này.
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    
+    # Xóa các handler cũ nếu có (tránh ghi trùng khi chạy lại trong cùng session)
+    if logger.handlers:
+        logger.handlers.clear()
+
+    # Format: [Thời gian] [Mức độ] Nội dung
+    formatter = logging.Formatter(
+        '[%(asctime)s] [%(levelname)s] %(message)s', 
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+
+    # 1. Handler ghi ra file run_log.txt
+    file_handler = logging.FileHandler(log_filename, encoding='utf-8')
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+
+    # 2. Handler ghi ra màn hình (Console)
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(logging.INFO) # Chỉ hiện INFO trở lên trên màn hình cho gọn
+    console_handler.setFormatter(formatter)
+    logger.addHandler(console_handler)
+
+    return logger
+
+
 # ---------------------------------------------------------------------------
 # Custom Exceptions
 # ---------------------------------------------------------------------------
@@ -1614,15 +1650,7 @@ Examples:
     # Setup logging
     log_file = output_dir / "optimizer.log"
     log_history_file = output_dir / "log_history.log"
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s %(levelname)s %(message)s",
-        handlers=[
-            logging.FileHandler(log_file, mode="a", encoding="utf-8"),
-            logging.FileHandler(log_history_file, mode="a", encoding="utf-8"),
-            logging.StreamHandler(sys.stdout),
-        ],
-    )
+    setup_logger(str(log_file))
     
     logging.info("=" * 60)
     logging.info("V-Shape IPM Motor Optimizer v5.2")
