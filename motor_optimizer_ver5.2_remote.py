@@ -967,11 +967,25 @@ def evaluate_population(population: List[Dict],
 
 
 def _parse_csv_outputs(uncached_population: List[Dict], output_dir: Path, score_weights: Dict[str, float]) -> List[Dict]:
-    """Parse CSV simulation outputs exported by Ansys/MATLAB."""
+    """Parse CSV simulation outputs exported by Ansys/MATLAB with robust NaN/empty handling."""
     uncached_metrics = []
+    
+    # Helper nội bộ: trích xuất số an toàn, tự động bỏ qua NaN/chuỗi lỗi
+    def safe_extract(df: pd.DataFrame, col_name: str, fallback: float, 
+                     use_window_mean: bool = True, window: int = 10) -> float:
+        if col_name is None or col_name not in df.columns:
+            return fallback
+        # Chuyển sang numeric, ép lỗi thành NaN, rồi drop hết NaN
+        series = pd.to_numeric(df[col_name], errors="coerce").dropna()
+        if series.empty:
+            return fallback
+        if use_window_mean:
+            # Lấy tối đa `window` dòng cuối cùng (pandas tự xử lý nếu len < window)
+            return float(series.iloc[-window:].mean())
+        return float(series.iloc[-1])
+
     for i in range(1, len(uncached_population) + 1):
         csv_path = output_dir / f"output_vars_iter_{i}.csv"
-        
         if not csv_path.is_file():
             logging.warning("Missing CSV for candidate %d – assigning penalty", i)
             m = {
@@ -981,20 +995,21 @@ def _parse_csv_outputs(uncached_population: List[Dict], output_dir: Path, score_
         else:
             try:
                 df = pd.read_csv(csv_path)
-                
-                eff_col = next((c for c in df.columns if "Eff" in c and "Efficiency" not in c), None) or \
-                          next((c for c in df.columns if "Efficiency" in c), None)
-                tr_col = next((c for c in df.columns if "TorqueRip" in c or "Ripple" in c), None)
+                if df.empty:
+                    raise ValueError("CSV file is completely empty.")
+
+                # Tìm cột tự động linh hoạt hơn
+                eff_col = next((c for c in df.columns if "Eff" in c), None)
+                tr_col = next((c for c in df.columns if "Ripple" in c or "TorqueRip" in c), None)
                 cost_col = next((c for c in df.columns if "Cost" in c or "TotCost" in c), None)
-                pwr_col = next((c for c in df.columns if "PwrDens" in c or "PowerDensity" in c or "Power" in c), None)
-                
-                eff = float(df[eff_col].iloc[-10:].mean()) if eff_col else 90.0
-                
-                
-                tr = float(df[tr_col].iloc[-10:].mean()) if tr_col else 15.0
-                cost = float(df[cost_col].iloc[-1]) if cost_col else 100.0
-                pwr = float(df[pwr_col].iloc[-1]) if pwr_col else 0.3
-                
+                pwr_col = next((c for c in df.columns if "Power" in c or "PwrDens" in c), None)
+
+                # Trích xuất an toàn
+                eff = safe_extract(df, eff_col, fallback=90.0, use_window_mean=True, window=10)
+                tr = safe_extract(df, tr_col, fallback=15.0, use_window_mean=True, window=10)
+                cost = safe_extract(df, cost_col, fallback=100.0, use_window_mean=False)
+                pwr = safe_extract(df, pwr_col, fallback=0.3, use_window_mean=False)
+
                 m = {
                     "efficiency": eff, "torque_ripple": tr,
                     "cost": cost, "power_density": pwr,
