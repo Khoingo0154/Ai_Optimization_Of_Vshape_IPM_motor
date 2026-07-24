@@ -32,3 +32,6 @@ output_vars_iter_*.csv
 simulation_history.csv
 log_history.csv
 
+# CodeGraph local database and cache
+.codegraph/
+
