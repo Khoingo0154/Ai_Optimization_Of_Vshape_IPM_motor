@@ -1,4 +1,15 @@
-pandas
-numpy
-openpyxl
-scipy
+# Core data analysis & math
+numpy>=2.0.0
+pandas>=2.0.0
+openpyxl>=3.0.0
+scipy>=1.10.0
+
+# Visualization & plotting
+matplotlib>=3.5.0
+
+# Machine Learning (Surrogate Models)
+scikit-learn>=1.0.0
+
+# Ansys Maxwell Direct Integration
+pyaedt>=0.8.0
+pywin32>=300; sys_platform == "win32"
