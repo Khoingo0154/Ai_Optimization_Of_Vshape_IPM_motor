@@ -1465,11 +1465,12 @@ def run_unit_tests():
     logging.info("\n[Test 10] Direct Ansys Integration Capability (PyAEDT / win32com)")
     if PYAEDT_AVAILABLE:
         logging.info("  [PASS] PyAEDT library is available")
+        passed += 1
     elif PYWIN32_AVAILABLE:
         logging.info("  [PASS] win32com ActiveX fallback is available (pywin32 installed)")
+        passed += 1
     else:
-        logging.warning("  [WARN] Neither PyAEDT nor win32com is installed for direct Ansys execution")
-    passed += 1
+        logging.info("  [SKIP] Neither PyAEDT nor win32com is installed for direct Ansys execution")
 
     # Summary
     total = passed + failed
@@ -1717,7 +1718,11 @@ Examples:
         if args.resume:
             logging.warning("--resume flag passed, but checkpoint file '%s' not found. Initializing fresh run.", state_path)
         if args.warm_start:
-            population = load_warm_start(Path(args.warm_start), bounds, args.pop_size)
+            try:
+                population = load_warm_start(Path(args.warm_start), bounds, args.pop_size)
+            except (FileNotFoundError, ValueError) as e:
+                logging.error("Failed to load warm-start data: %s", e)
+                sys.exit(1)
         else:
             population = [random_individual(bounds) for _ in range(args.pop_size)]
         best_ind = None

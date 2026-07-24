@@ -19,7 +19,7 @@ Thumbs.db
 *.aedtresults/
 *.aedtresults
 *.aedt.auto
-*.aedt.lock
+
 *.tmp
 
 # Large temporary simulation output state & logs
