@@ -559,6 +559,29 @@ def nsga2_tournament_selection(population: List[Dict],
 # ---------------------------------------------------------------------------
 # Evolutionary Operators (Random, Repair, Crossover, Mutation)
 # ---------------------------------------------------------------------------
+def get_baseline_individual(bounds: Optional[dict] = None) -> dict:
+    """Return a hardcoded feasible baseline individual snapped to step sizes."""
+    raw = {
+        "Dr_in": 90.0, "Air_gap": 1.0, "Lamda": 0.9, "Bridge": 1.5,
+        "Hs0": 1.1899, "Hs1": 1.5, "Hs2": 18.07656, "Bs0": 2.1128,
+        "Bs1": 6.90142, "Bs2": 10.88076, "O1": 5.4, "O2": 6.0,
+        "B1": 3.5, "rib": 2.0, "hrib": 2.4, "Mt": 5.282,
+        "Mw": 25.44156, "magDmin": 10.0, "thet_deg": 30.0,
+    }
+    if bounds:
+        snapped = {}
+        for k, v in raw.items():
+            if k in bounds:
+                info = bounds[k]
+                snapped[k] = snap_to_step(v, info["lower"], info["upper"], info["step"])
+            else:
+                snapped[k] = v
+        if is_feasible(snapped):
+            return snapped
+    assert is_feasible(raw), "Hardcoded baseline is infeasible under current constraints!"
+    return raw
+
+
 def random_individual(bounds: dict) -> dict:
     """Create a random feasible individual."""
     for attempt in range(1000):
@@ -575,19 +598,12 @@ def random_individual(bounds: dict) -> dict:
             return individual
     
     logging.warning("Could not find random feasible individual after 1000 attempts. Using baseline.")
-    baseline = {
-        "Dr_in": 90.0, "Air_gap": 1.0, "Lamda": 0.9, "Bridge": 1.5,
-        "Hs0": 1.1899, "Hs1": 1.5, "Hs2": 18.07656, "Bs0": 2.1128,
-        "Bs1": 6.90142, "Bs2": 10.88076, "O1": 5.4, "O2": 6.0,
-        "B1": 3.5, "rib": 2.0, "hrib": 2.4, "Mt": 5.282,
-        "Mw": 25.44156, "magDmin": 10.0, "thet_deg": 30.0,
-    }
-    assert is_feasible(baseline), "Hardcoded baseline is infeasible under current constraints!"
-    return baseline
+    return get_baseline_individual(bounds)
 
 
-def repair_individual(ind: dict, bounds: dict, max_attempts: int = 5) -> dict:
-    """Smart repair strategy for individuals violating geometric constraints."""
+
+def repair_individual(ind: dict, bounds: dict, max_attempts: int = 10) -> dict:
+    """Analytical & heuristic repair strategy for individuals violating geometric constraints."""
     repaired = ind.copy()
     
     for name, info in bounds.items():
@@ -602,32 +618,61 @@ def repair_individual(ind: dict, bounds: dict, max_attempts: int = 5) -> dict:
         if not violated:
             return repaired
             
-        if "SlotHeight" in violated:
+        # Analytical Repair 1: Slot Height & Rotor Stator Fit
+        if "SlotHeight" in violated or "RotorFitsStator" in violated:
+            lamda = repaired.get("Lamda", 0.9)
+            air_gap = repaired.get("Air_gap", 1.0)
+            ds_in = (L_STK / lamda) + air_gap
+            max_hs_sum = ((DS_OUT - ds_in) / 2.0) - SLOT_HEIGHT_MARGIN - 0.01
+            
+            hs0 = repaired.get("Hs0", 1.0)
+            hs1 = repaired.get("Hs1", 1.0)
+            
+            # Directly calculate upper bound for Hs2
+            max_hs2 = max_hs_sum - hs0 - hs1
             if "Hs2" in bounds:
                 info = bounds["Hs2"]
-                repaired["Hs2"] = snap_to_step(repaired["Hs2"] - info["step"], info["lower"], info["upper"], info["step"])
-            elif "Hs1" in bounds:
+                target_hs2 = min(repaired.get("Hs2", info["upper"]), max_hs2)
+                repaired["Hs2"] = snap_to_step(target_hs2, info["lower"], info["upper"], info["step"])
+
+            # If still violating, adjust Hs1
+            if not constraint_slot_height(repaired) and "Hs1" in bounds:
                 info = bounds["Hs1"]
-                repaired["Hs1"] = snap_to_step(repaired["Hs1"] - info["step"], info["lower"], info["upper"], info["step"])
+                max_hs1 = max_hs_sum - hs0 - repaired.get("Hs2", 16.0)
+                target_hs1 = min(repaired.get("Hs1", info["upper"]), max_hs1)
+                repaired["Hs1"] = snap_to_step(target_hs1, info["lower"], info["upper"], info["step"])
 
+            # If still violating, adjust Hs0
+            if not constraint_slot_height(repaired) and "Hs0" in bounds:
+                info = bounds["Hs0"]
+                max_hs0 = max_hs_sum - repaired.get("Hs1", 1.0) - repaired.get("Hs2", 16.0)
+                target_hs0 = min(repaired.get("Hs0", info["upper"]), max_hs0)
+                repaired["Hs0"] = snap_to_step(target_hs0, info["lower"], info["upper"], info["step"])
+
+        # Analytical Repair 2: Slot Width Progression (Bs0 <= Bs1 <= Bs2)
         if "SlotWidthProgression" in violated:
-            if repaired.get("Bs0", 0) > repaired.get("Bs1", 0):
-                repaired["Bs1"] = repaired["Bs0"]
-            if repaired.get("Bs1", 0) > repaired.get("Bs2", 0):
-                repaired["Bs2"] = repaired["Bs1"]
+            if repaired.get("Bs0", 0) > repaired.get("Bs1", 0) and "Bs1" in bounds:
+                info = bounds["Bs1"]
+                repaired["Bs1"] = snap_to_step(max(repaired["Bs1"], repaired["Bs0"]), info["lower"], info["upper"], info["step"])
+            if repaired.get("Bs1", 0) > repaired.get("Bs2", 0) and "Bs2" in bounds:
+                info = bounds["Bs2"]
+                repaired["Bs2"] = snap_to_step(max(repaired["Bs2"], repaired["Bs1"]), info["lower"], info["upper"], info["step"])
 
+        # Analytical Repair 3: Bridge Thickness (B1 <= Mt - 0.3)
         if "BridgeThickness" in violated:
             if "B1" in bounds and "Mt" in bounds:
                 max_b1 = repaired["Mt"] - 0.3
                 info = bounds["B1"]
                 repaired["B1"] = snap_to_step(min(repaired["B1"], max_b1), info["lower"], info["upper"], info["step"])
 
+        # Analytical Repair 4: Magnet Duct Fit (Mw > 2 * B1)
         if "MagnetDuctFit" in violated:
             if "Mw" in bounds and "B1" in bounds:
                 min_mw = 2.0 * repaired["B1"] + 0.1
                 info = bounds["Mw"]
                 repaired["Mw"] = snap_to_step(max(repaired["Mw"], min_mw), info["lower"], info["upper"], info["step"])
 
+        # Analytical Repair 5: Rib Height Limit (hrib <= min(O2, 4.5, bridge * 2))
         if "RibHeightLimit" in violated:
             if "hrib" in bounds:
                 o2 = repaired.get("O2", 6.0)
@@ -639,7 +684,20 @@ def repair_individual(ind: dict, bounds: dict, max_attempts: int = 5) -> dict:
         if is_feasible(repaired):
             return repaired
 
+    # Ironclad Fallback: If heuristic/analytical repair loops fail, blend with baseline
+    if not is_feasible(repaired):
+        baseline = get_baseline_individual(bounds)
+        for key in ["Hs2", "Hs1", "Hs0", "Bs0", "Bs1", "Bs2", "B1", "Mw", "hrib", "Lamda", "Air_gap", "Dr_in"]:
+            if key in repaired and key in baseline:
+                repaired[key] = baseline[key]
+                if is_feasible(repaired):
+                    return repaired
+
+    if not is_feasible(repaired):
+        return get_baseline_individual(bounds)
+
     return repaired
+
 
 
 def crossover(parent1: dict, parent2: dict, bounds: dict, rate: float = 0.7) -> Tuple[dict, dict]:
@@ -923,6 +981,18 @@ def evaluate_population(population: List[Dict],
 
     if not uncached_population:
         return results
+
+    # Ironclad pre-simulation feasibility validation for uncached individuals
+    bounds_file = root_dir / "Ai_Optimization_Bounds.xlsx"
+    bounds_dict = load_bounds(bounds_file) if bounds_file.is_file() else {}
+    for i in range(len(uncached_population)):
+        if not is_feasible(uncached_population[i]):
+            violated = get_violated_constraints(uncached_population[i])
+            logging.warning("⚠️ Uncached candidate %d is infeasible (%s)! Repairing before simulation...", 
+                            i + 1, ", ".join(violated))
+            if bounds_dict:
+                uncached_population[i] = repair_individual(uncached_population[i], bounds_dict)
+            assert is_feasible(uncached_population[i]), f"Candidate {i+1} remains infeasible after repair!"
 
     if mode == "offline":
         uncached_metrics = []
@@ -1362,11 +1432,11 @@ def run_unit_tests():
                "Mw": 5.0, "Lamda": 1.5, "Hs0": 3.0, "Hs1": 3.0, "Hs2": 40.0,
                "hrib": 5.5, "O2": 6.0}
     repaired = repair_individual(bad_ind, bounds_test)
-    if all(bounds_test[k]["lower"] <= repaired[k] <= bounds_test[k]["upper"] for k in bounds_test):
-        logging.info("  [PASS] All repaired values within bounds")
+    if is_feasible(repaired) and all(bounds_test[k]["lower"] <= repaired[k] <= bounds_test[k]["upper"] for k in bounds_test):
+        logging.info("  [PASS] All repaired values within bounds and 100% FEASIBLE")
         passed += 1
     else:
-        logging.error("  [FAIL] Repair failed to bring values within bounds")
+        logging.error("  [FAIL] Repair failed to produce a feasible individual within bounds")
         failed += 1
     
     # Test 5: Score Computation

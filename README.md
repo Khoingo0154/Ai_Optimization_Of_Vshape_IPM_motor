@@ -1,114 +1,296 @@
 # AI Optimization of V-Shape IPM Motor
 
-This project implements a genetic algorithm and multi-objective optimization system (NSGA-II) for V-Shape Interior Permanent Magnet (IPM) motor design, coupling Python, MATLAB ActiveX, and Ansys Maxwell FEM simulations.
+[![Python](https://img.shields.io/badge/Python-3.13-blue.svg)](https://www.python.org/)
+[![Ansys](https://img.shields.io/badge/Ansys-Maxwell_3D-red.svg)](https://www.ansys.com/)
+[![Algorithm](https://img.shields.io/badge/Algorithm-NSGA--II%20%7C%20GA-green.svg)]()
+[![License](https://img.shields.io/badge/License-MIT-brightgreen.svg)]()
 
-## Project Structure
+Automated multi-objective design optimization framework for **V-Shape Interior Permanent Magnet (IPM)** electric motors using Genetic Algorithms (GA / NSGA-II) integrated with **Ansys Maxwell 3D** Finite Element Analysis (FEA) and machine learning surrogate models.
+
+---
+
+## 📋 Table of Contents
+
+- [Overview](#-overview)
+- [System Architecture & Workflow](#-system-architecture--workflow)
+- [Project Structure](#-project-structure)
+- [Design Variables & Geometric Constraints](#-design-variables--geometric-constraints)
+- [Environment Setup & Installation](#-environment-setup--installation)
+- [Input Files Requirements](#-input-files-requirements)
+- [Pre-Execution: Clearing Lock Files](#-pre-execution-clearing-lock-files)
+- [Execution Commands & CLI Options](#-execution-commands--cli-options)
+- [Output Files & Diagnostic Artifacts](#-output-files--diagnostic-artifacts)
+- [MATLAB ActiveX Bridge Reference](#-matlab-activex-bridge-reference)
+
+---
+
+## ⚡ Overview
+
+Designing high-performance IPM motors requires balancing complex multi-objective trade-offs such as **motor efficiency**, **torque ripple**, **power density**, and **material cost**.
+
+This repository contains an end-to-end Python AI Optimization Agent (`motor_optimizer_ver5.2_remote.py`) capable of:
+- Exploring a **19-dimensional design space** governed by strict geometric feasibility rules.
+- Driving **Ansys Maxwell 3D** FEA simulations directly (via PyAEDT / ActiveX) or via a **MATLAB Bridge**.
+- Accelerating candidate evaluation using **Hybrid Machine Learning Surrogates** (KNN + Gaussian Process).
+- Generating Pareto-optimal design frontiers and detailed diagnostic reports.
+
+---
+
+## 🏗 System Architecture & Workflow
+
+```mermaid
+graph TD
+    A["Python AI Agent (motor_optimizer_ver5.2_remote.py)"] --> B["Population Initialization / Warm-Start"]
+    B --> C["Smart Repair Function (Geometric Constraints Check)"]
+    C --> D{"Evaluation Cache Check"}
+    D -- "Cached" --> H["Fitness / Objective Scoring"]
+    D -- "New Candidate" --> E{"Selected Execution Mode"}
+    E -- "--mode ansys" --> F1["Direct PyAEDT / ActiveX COM Connection"]
+    E -- "--mode matlab" --> F2["MATLAB ActiveX Bridge Interface"]
+    E -- "--mode offline" --> F3["ML Surrogate Model (KNN + GP)"]
+    F1 --> G["Ansys Maxwell 3D FEA Simulation"]
+    F2 --> G
+    F3 --> H
+    G --> H
+    H --> I["NSGA-II Non-Dominated Sorting & Crowding Distance"]
+    I --> J{"Convergence / Patience Met?"}
+    J -- "No" --> K["Crossover & Step Offset Mutation"]
+    K --> C
+    J -- "Yes" --> L["Export Results, Pareto Plots & Markdown Report"]
+```
+
+---
+
+## 📁 Project Structure
 
 ```
 Ai_Optimization_Of_Vshape_IPM_motor/
 │
-├── input/                              ← Input data & geometry specification
-│   ├── Ai_Optimization_Bounds.xlsx     ← 19 design variable bounds and step constraints
-│   ├── Ai_Optimization_ParamValues.xlsx← Parameter values written by Python for MATLAB
-│   ├── Matlab_Ai_Optimization.aedt     ← 3D Ansys Maxwell motor model template
-│   └── ... (specification documents)
+├── motor_optimizer_ver5.2_remote.py        # Main Production Script (v5.2 - Direct Ansys, Caching, Warm-start, NSGA-II)
+├── motor_optimizer_ver5.2(fix lan1)_remote.py # Patch iteration script for v5.2
+├── motor_optimizer_ver5.1_remote.py        # Previous stable optimization script (v5.1)
+├── motor_optimizer_ver5.1.py              # Legacy version 5.1
+├── motor_optimizer_ver2.py                # Legacy version 2.0
+├── motor_optimizer.py                     # Baseline GA optimization script
+├── requirements.txt                       # Python dependencies (pyaedt, pywin32, pandas, numpy, scikit-learn, etc.)
 │
-├── output/                             ← Automatically generated output artifacts
-│   ├── best_optimized_design_v5.1.csv  ← Best design configuration from version 5.1
-│   ├── best_optimized_design_v5.csv    ← Best design from version 5
-│   ├── best_optimized_design_v2.csv    ← Best design from version 2
-│   ├── simulation_history.csv          ← Complete optimization candidate history
-│   ├── pareto_front.png                ← 2D Efficiency vs Torque Ripple Pareto plot
-│   ├── pareto_3d.png                   ← 3D Pareto plot (Efficiency vs TorqueRipple vs Cost)
-│   ├── parallel_coordinates.png        ← Parallel coordinates trade-off chart
-│   ├── convergence_history.png         ← Best score convergence curve
-│   ├── sensitivity_analysis.csv        ← Spearman rank correlation matrix for 19 variables
-│   ├── optimization_report.md          ← Automatically generated Markdown summary report
-│   └── optimizer.log                   ← Per-run log output
+├── Ai_Optimization_Bounds.xlsx            # Excel file defining 19 design variable limits, steps & units
+├── Ai_Optimization_ParamValues.xlsx       # Excel parameter interchange file for MATLAB bridge
+├── Matlab_Ai_Optimization.aedt            # Baseline Ansys Maxwell 3D motor model template
+├── Ai_optimization.m                      # MATLAB ActiveX automation script for batch Maxwell simulations
 │
-├── motor_optimizer_ver5.1_remote.py ← Primary Production-grade script (Flat root-level execution)
-├── Python_code/                        ← Python source code archive
-│   ├── motor_optimizer_ver5.1.py       ← Standard v5.1 script (Subdirectory input/output)
-│   ├── motor_optimizer_ver5.py         ← Integrated GA/NSGA-II optimizer (v5)
-│   ├── motor_optimizer_ver2.py         ← Standard GA baseline (v2)
-│   ├── motor_optimizer_ver3.py / ver4.py← Experimental stubs (v3 & v4)
-│   └── requirements.txt                ← Python dependencies
+├── best_optimized_design_v5.2.csv         # Top-performing design candidate parameters & performance metrics
+├── output_vars_iter_*.csv                 # Raw FEA exported transient data for iteration candidate *
+├── simulation_history.csv                 # Complete historical database of all evaluated candidate designs
+├── log_history.log / optimizer.log        # Detailed system execution & evaluation logs
+├── optimizer_state.pkl                    # Checkpoint file for resuming interrupted runs (--resume)
+├── optimization_report.md                 # Auto-generated Markdown summary report
 │
-├── Ai_optimization.m                   ← MATLAB ActiveX automation script for Ansys Maxwell
-├── AGENTS.md                           ← Comprehensive AI Agent developer instructions
-├── Technical_Reference.md              ← In-depth technical & mathematical reference
-├── workflow_optimization.md            ← System flowchart and execution pipeline
-└── README.md                           ← This file
-```
-
-## Optimizer Versions
-
-### Version 5.1 Remote (Production-Grade Primary Script - Recommended)
-- **Flat Root-Level I/O**: Reads and writes all configuration (Excel bounds), simulation history, reports, and plot images directly in the root folder.
-- **Custom MATLAB Path (`--matlab-exe`)**: Supports passing explicit path to `matlab.exe` (e.g. `--matlab-exe "C:\MATLAB\R2023b\bin\matlab.exe"`).
-- **Engineer Manual Override (`--interactive` / `--override-csv`)**: Allows engineers to interactively inspect or override parameters post-optimization, validating constraints and generating comparison tables (`engineer_manual_design.csv`).
-- **Strict Error Handling**: Immediately halts execution with clear error logs if MATLAB or Ansys simulation fails.
-- **Complete NSGA-II Engine**: Dedicated reproduction using binary tournament on Pareto rank + crowding distance.
-- **Gaussian Process & Standardized ML Surrogate**: Uses `sklearn` GaussianProcessRegressor with RBF kernel and standardized feature vectors $[0, 1]$, with auto-fallback to KNN-IDW.
-- **Built-in Unit Tests (`--test`)**: 7 automated unit tests verifying constraints, dominance sorting, crowding distance, repair logic, and scoring without full optimization runs.
-- **Advanced 4-Plot Visualization (`--plot-all`)**: Generates 2D Pareto front, 3D Pareto space, Parallel coordinates, and Convergence curves.
-- **Smart Diagnostics & Reports**: Auto-detects population diversity collapse, stagnation, and generates `optimization_report.md`.
-
-### Version 5 (Unified Synthesis)
-- Integrated GA and NSGA-II engines.
-- Hybrid ML/Physics surrogate model.
-- Spearman sensitivity analysis (`--sensitivity`).
-- 2D Pareto front plot (`--plot-pareto`).
-
-### Version 2 (Standard Baseline)
-- Single-objective weighted Genetic Algorithm.
-- 4 physical geometric constraints & step-snapping repair.
-- Checkpoint/resume functionality (`optimizer_state.pkl`).
-- Direct MATLAB / Ansys Maxwell ActiveX automation.
-
----
-
-## Running the Optimizer
-
-### Built-in Unit Testing
-```bash
-python motor_optimizer_ver5.1_remote.py --test
-```
-
-### Quick Offline Optimization with NSGA-II & Full Visualizations
-```bash
-python motor_optimizer_ver5.1_remote.py --algorithm nsga2 --pop-size 12 --generations 30 --mode offline --plot-all
-```
-
-### Full Ansys Maxwell FEM Simulation Run (via MATLAB)
-```bash
-python motor_optimizer_ver5.1_remote.py --algorithm nsga2 --pop-size 8 --generations 10 --mode matlab --matlab-exe "C:\MATLAB\R2023b\bin\matlab.exe" --plot-all
+├── pareto_front.png                       # 2D Pareto front plot (Efficiency vs. Torque Ripple)
+├── pareto_3d.png                          # 3D Pareto front plot (Efficiency vs. Torque Ripple vs. Cost)
+├── parallel_coordinates.png               # Parallel coordinates visualization across 4 target metrics
+├── convergence_history.png                # Fitness score convergence chart across generations
+├── sensitivity_analysis.csv               # Spearman rank correlation sensitivity table
+│
+├── AGENTS.md                              # Instructions & technical guidelines for AI Agents
+├── Technical_Reference.md                  # Deep technical reference documentation
+├── workflow_optimization.md                # System workflow & Mermaid diagrams
+├── variable_evolution_analysis.md         # Variable evolution & parameter trend analysis
+├── Optimization Requirements.pdf          # Baseline project requirement specification
+└── README.md                              # Main GitHub documentation (this file)
 ```
 
 ---
 
-## Key Features
+## 📐 Design Variables & Geometric Constraints
 
-- **Strict Feasibility Guarantee**: 4 geometric constraints enforced with multi-strategy repair.
-- **Canonical Variable Ordering**: Maintains strict alignment for 19 parameters across Python, Excel, MATLAB, and Ansys.
-- **Multi-Objective Engine**: Full Deb's NSGA-II implementation for non-dominated sorting and crowding distance assignment.
-- **Data-Driven & Physics Hybrid Surrogate**: Standardized Gaussian Process / KNN-IDW surrogate dynamically trained on evaluation history.
-- **Comprehensive Visualizations**: Auto-generates 2D/3D Pareto, Parallel Coordinates, and Convergence charts.
-- **Automated Reporting**: Generates Markdown report summarizing config, top 5 candidate designs, and parameter rankings.
+The optimization engine tunes **19 key geometric and electrical parameters**:
+
+| # | Parameter | Description | Initial | Min | Max | Step | Unit |
+|---|---|---|---|---|---|---|---|
+| 1 | `Dr_in` | Rotor inner diameter | 90.0 | 50.0 | 90.0 | 5.0 | mm |
+| 2 | `Air_gap` | Air gap thickness between rotor & stator | 1.0 | 0.5 | 1.5 | 0.1 | mm |
+| 3 | `Lamda` | Stack length / Air gap diameter ratio | 0.9 | 0.8 | 1.0 | 0.1 | - |
+| 4 | `Bridge` | Distance from outer rotor to magnet slot | 1.5 | 1.0 | 3.0 | 0.1 | mm |
+| 5 | `Hs0` | Stator tooth opening height | 1.19 | 1.0 | 2.0 | 0.1 | mm |
+| 6 | `Hs1` | Stator tooth wedge height | 1.5 | 1.0 | 2.0 | 0.1 | mm |
+| 7 | `Hs2` | Stator main slot height | 18.08 | 16.0 | *Constraint* | 1.0 | mm |
+| 8 | `Bs0` | Stator slot opening width | 2.11 | 1.5 | 4.0 | 0.5 | mm |
+| 9 | `Bs1` | Stator slot bottom width | 6.90 | 3.0 | 10.0 | 0.5 | mm |
+| 10 | `Bs2` | Stator slot top width | 10.88 | 5.0 | 14.0 | 1.0 | mm |
+| 11 | `O1` | Duct bottom offset | 5.4 | 0.0 | 13.0 | 1.0 | mm |
+| 12 | `O2` | Duct inner rotor offset | 6.0 | 2.0 | 7.0 | 0.5 | mm |
+| 13 | `B1` | Duct wall thickness | 3.5 | 3.2 | *Constraint* | 0.5 | mm |
+| 14 | `rib` | Rotor bridge rib width | 2.0 | 2.0 | 15.0 | 1.0 | mm |
+| 15 | `hrib` | Rotor bridge rib height | 2.4 | 2.0 | 6.0 | 0.5 | mm |
+| 16 | `Mt` | Magnet thickness | 5.282 | 4.0 | 6.0 | 0.2 | mm |
+| 17 | `Mw` | Magnet width | 25.44 | 10.0 | 30.0 | 2.0 | mm |
+| 18 | `magDmin` | Minimum distance between magnet pairs | 10.0 | 0.0 | 10.0 | 1.0 | mm |
+| 19 | `thet_deg` | Excitation current advance angle | 30.0 | 0.0 | 90.0 | 1.0 | deg |
 
 ---
 
-## Dependencies
+## 💻 Environment Setup & Installation
 
-Requires Python 3.10+ with standard scientific packages:
-- `pandas`
-- `numpy`
-- `openpyxl`
-- `scipy`
-- `matplotlib`
-- `scikit-learn` (optional, for Gaussian Process surrogate)
+### 1. Create Virtual Environment
 
-Install dependencies with:
+Open Terminal, PowerShell, or Command Prompt in the repository directory and run:
+
 ```bash
-pip install -r Python_code/requirements.txt
+python -m venv .venv
 ```
+
+### 2. Activate Virtual Environment
+
+- **Windows PowerShell**:
+  ```powershell
+  .\.venv\Scripts\Activate.ps1
+  ```
+- **Windows Command Prompt (CMD)**:
+  ```cmd
+  .\.venv\Scripts\activate.bat
+  ```
+
+*(Verify that `(.venv)` appears at the start of your command prompt)*.
+
+### 3. Install Required Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## 📂 Input Files Requirements
+
+Ensure the following input files are located in the project root directory:
+
+1. **`Ai_Optimization_Bounds.xlsx`**: Excel spreadsheet defining the 19 design variable parameters, lower/upper boundaries, discrete steps, and physical units.
+2. **`Matlab_Ai_Optimization.aedt`**: Baseline Ansys Maxwell 3D motor design template project.
+3. *(Optional)* **`best_optimized_design_v5.2.csv`**: Seed file containing previous optimal design parameters when using the `--warm-start` option.
+
+---
+
+## 🧹 Pre-Execution: Clearing Lock Files
+
+If Ansys Maxwell or a previous optimization run was interrupted abruptly, AEDT lock files may remain in the workspace (e.g. `Matlab_Ai_Optimization.aedt.lock`), blocking file access.
+
+**Always clear lock files before launching a new optimization run:**
+
+- **Windows PowerShell**:
+  ```powershell
+  Remove-Item -Path "*.lock" -Force -ErrorAction SilentlyContinue
+  ```
+
+- **Command Prompt (CMD)**:
+  ```cmd
+  del /f /q *.lock
+  ```
+
+---
+
+## 🚀 Execution Commands & CLI Options
+
+### Basic Command Syntax
+
+```bash
+python motor_optimizer_ver5.2_remote.py [options]
+```
+
+### Simulation Modes (`--mode`)
+
+- **`ansys`** *(Recommended)*: Direct connection to Ansys Maxwell via PyAEDT / ActiveX COM (fastest & most stable FEA connection).
+- **`matlab`**: Simulation executed via the MATLAB ActiveX bridge.
+- **`offline`**: Ultra-fast surrogate evaluation using machine learning models (KNN + Gaussian Process) without launching Ansys.
+
+---
+
+### Execution Examples
+
+#### 1. Run via MATLAB Bridge with NSGA-II (as requested)
+```powershell
+python motor_optimizer_ver5.2_remote.py --mode matlab --algorithm nsga2 --pop-size 10 --generations 8
+```
+
+#### 2. Direct Ansys Simulation with NSGA-II & Full Plot Generation (Production)
+```powershell
+python motor_optimizer_ver5.2_remote.py --mode ansys --algorithm nsga2 --pop-size 8 --generations 10 --plot-all
+```
+
+#### 3. Offline Fast Surrogate Simulation (Algorithm Verification in seconds)
+```powershell
+python motor_optimizer_ver5.2_remote.py --mode offline --algorithm nsga2 --pop-size 12 --generations 30 --plot-all
+```
+
+#### 4. Run Integration Unit Tests (14 Automated Tests)
+```powershell
+python motor_optimizer_ver5.2_remote.py --test
+```
+
+#### 5. Resume Interrupted Run from Saved Checkpoint (`optimizer_state.pkl`)
+```powershell
+python motor_optimizer_ver5.2_remote.py --resume --mode ansys --generations 20
+```
+
+---
+
+### Command-Line Interface (CLI) Reference Table
+
+| Flag | Default | Description |
+|---|---|---|
+| `--algorithm` | `ga` | Optimization algorithm choice: `ga` (Genetic Algorithm) or `nsga2` (Multi-Objective NSGA-II). |
+| `--pop-size` | `8` | Population size per generation. |
+| `--generations` | `10` | Maximum number of generations to run. |
+| `--mode` | `offline` | Simulation execution mode: `ansys`, `matlab`, or `offline`. |
+| `--non-graphical` | `True` | Runs Ansys Maxwell in headless mode to save RAM/CPU resources. |
+| `--warm-start` | `None` | Path to CSV file to seed the initial population. |
+| `--resume` | `False` | Resumes optimization from checkpoint file `optimizer_state.pkl`. |
+| `--plot-all` | `False` | Automatically generates all 4 diagnostic and Pareto charts upon completion. |
+| `--plot-pareto` | `False` | Generates 2D Pareto optimal front plot. |
+| `--sensitivity` | `False` | Performs Spearman rank correlation sensitivity analysis across design variables. |
+| `--patience` | `20` | Early stopping threshold (generations without improvement). |
+
+---
+
+## 📊 Output Files & Diagnostic Artifacts
+
+Upon completion, the framework outputs the following files in the project root:
+
+### 1. Primary Data & Reports
+- **`best_optimized_design_v5.2.csv`**: Parameters and performance metrics of the single best design candidate.
+- **`output_vars_iter_<N>.csv`**: Raw exported transient FEA variables (currents, flux, back-EMF, torque over time) for candidate `N`.
+- **`simulation_history.csv`**: Historical database of all evaluated candidate designs across all generations.
+- **`log_history.csv`**: Evaluation status log per individual (runtime, geometric constraint validity, fitness score).
+- **`optimizer.log`**: Detailed system execution log file.
+- **`optimizer_state.pkl`**: Binary checkpoint file allowing execution resumption via `--resume`.
+- **`optimization_report.md`**: Comprehensive summary report formatted in Markdown.
+
+### 2. Diagnostic & Pareto Visualizations (when `--plot-all` is enabled)
+- **`pareto_front.png`**: 2D Pareto optimal trade-off curve (Efficiency % vs. Torque Ripple %).
+- **`pareto_3d.png`**: 3D Pareto optimal surface (Efficiency % vs. Torque Ripple % vs. Material Cost).
+- **`parallel_coordinates.png`**: Multi-dimensional parallel coordinates plot across 4 objective metrics.
+- **`convergence_history.png`**: Generation-by-generation fitness convergence trajectory chart.
+
+### 3. Sensitivity Analysis (when `--sensitivity` is enabled)
+- **`sensitivity_analysis.csv`**: Spearman rank correlation matrix measuring the impact of each parameter on motor objectives.
+
+---
+
+## 🔌 MATLAB ActiveX Bridge Reference
+
+For legacy setups using the MATLAB bridge (`--mode matlab`), the `Ai_optimization.m` script automates Ansys Maxwell batch simulations using ActiveX COM.
+
+### MATLAB Data Interchange Format (`Ai_Optimization_ParamValues.xlsx`)
+
+| Dr_in | Air_gap | Lamda | Bridge | Hs0 | ... | thet_deg |
+|---|---|---|---|---|---|---|
+| v1.1 | v1.2 | v1.3 | v1.4 | v1.5 | ... | v1.19 | *(Row 1: Iteration 1)* |
+| v2.1 | v2.2 | v2.3 | v2.4 | v2.5 | ... | v2.19 | *(Row 2: Iteration 2)* |
+
+Each row defines one design iteration passed from Python to MATLAB, which updates Maxwell parameters, executes time-step transient analysis, and writes output variables to `output_vars_iter_<N>.csv`.
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License - see the `LICENSE` file for details.

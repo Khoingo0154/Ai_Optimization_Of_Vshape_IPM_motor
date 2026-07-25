@@ -109,3 +109,155 @@ Right now the Output files contain all data we are interested in when designing 
 
 - Saving/closing the project: commented out at the end of the script; uncomment `invoke(oProject, 'Save')` and/or `oDesktop.CloseProject(project_name)` if desired.
 - Variable order: the order of columns in `Ai_Optimization_ParamValues.xlsx` must match the order of rows (parameters) in `Ai_Optimization_Bounds.xlsx`, since the script maps them positionally via the loop index `i`.
+
+
+
+--------------------------------------------------------------------------------
+## Python Optimization Script Guide (`motor_optimizer_ver5.2_remote.py`)
+--------------------------------------------------------------------------------
+
+This section provides comprehensive instructions for configuring, executing, and analyzing results from the Python AI Optimization Agent (`motor_optimizer_ver5.2_remote.py`).
+
+
+### 1. Environment Setup & Activation
+
+Before executing the optimization framework, set up and activate the Python virtual environment to ensure all required dependencies (such as `pyaedt`, `win32com`, `pandas`, `numpy`, `scikit-learn`, `matplotlib`, and `scipy`) are installed.
+
+* **Step 1: Open Terminal / PowerShell / CMD** in the project root directory:
+  `d:\Ai_Optimization_Of_Vshape_IPM_motor`
+
+* **Step 2: Create Virtual Environment** (run once initially):
+  ```bash
+  python -m venv .venv
+  ```
+
+* **Step 3: Activate Virtual Environment**:
+  - **Windows PowerShell**:
+    ```powershell
+    .\.venv\Scripts\Activate.ps1
+    ```
+  - **Command Prompt (CMD)**:
+    ```cmd
+    .\.venv\Scripts\activate.bat
+    ```
+  *(Upon successful activation, `(.venv)` will appear as a prefix on your command prompt)*.
+
+* **Step 4: Install Dependencies**:
+  ```bash
+  pip install -r requirements.txt
+  ```
+
+
+
+### 2. Input Files Verification
+
+Ensure the following required input files are present in the project root directory prior to launching the script:
+
+1. **`Ai_Optimization_Bounds.xlsx`**: Excel file defining the 19 design variable parameters, lower limits (`Lower_Limit`), upper limits (`Upper_Limit`), step sizes (`Step`), and physical units (`Unit`).
+2. **`Matlab_Ai_Optimization.aedt`**: Ansys Maxwell 3D project template file containing the baseline IPM motor design model.
+3. *(Optional)* **`best_optimized_design_v5.2.csv`**: Seed file containing previous optimal design parameters when using the `--warm-start` initialization option.
+
+
+### 3. Pre-Execution Step: Clear Lock Files
+
+If Ansys Maxwell or a previous simulation session was terminated unexpectedly, Ansys leaves lock files in the directory (e.g., `Matlab_Ai_Optimization.aedt.lock`). Existing lock files will prevent Ansys from opening or modifying the project file.
+
+**Mandatory Pre-Execution Command**:
+
+- **PowerShell**:
+  ```powershell
+  Remove-Item -Path "*.lock" -Force -ErrorAction SilentlyContinue
+  ```
+
+- **Command Prompt (CMD)**:
+  ```cmd
+  del /f /q *.lock
+  ```
+
+
+### 4. Command Execution & CLI Reference
+
+#### General Command Syntax:
+```bash
+python motor_optimizer_ver5.2_remote.py [options]
+```
+
+#### Simulation Modes (`--mode`):
+1. **`--mode ansys`** *(Recommended)*: Direct connection to Ansys Maxwell via PyAEDT / ActiveX COM. Provides the highest accuracy, stability, and speed for FEM evaluations.
+2. **`--mode matlab`**: Executes Ansys simulations through the MATLAB ActiveX bridge interface.
+3. **`--mode offline`**: Ultra-fast surrogate simulation using machine learning models (KNN + Gaussian Process), running within seconds without opening Ansys.
+
+#### Practical Command Examples:
+
+* **Example 1: Run via MATLAB Bridge with NSGA-II**
+  *(Multi-objective optimization with population size = 10, running for 8 generations)*
+  ```powershell
+  python motor_optimizer_ver5.2_remote.py --mode matlab --algorithm nsga2 --pop-size 10 --generations 8
+  ```
+
+* **Example 2: Direct Ansys Maxwell Simulation with Full Plot Generation** *(Production Recommendation)*
+  *(Headless execution `--non-graphical`, NSGA-II algorithm, population size = 8, 10 generations, auto-generating all 4 diagnostic plots)*
+  ```powershell
+  python motor_optimizer_ver5.2_remote.py --mode ansys --algorithm nsga2 --pop-size 8 --generations 10 --plot-all
+  ```
+
+* **Example 3: Fast Offline Surrogate Testing** *(Algorithm verification in 3 seconds)*
+  ```powershell
+  python motor_optimizer_ver5.2_remote.py --mode offline --algorithm nsga2 --pop-size 12 --generations 30 --plot-all
+  ```
+
+* **Example 4: System Integration & Unit Testing** *(Verifies 14 core system tests)*
+  ```powershell
+  python motor_optimizer_ver5.2_remote.py --test
+  ```
+
+* **Example 5: Resume Interrupted Optimization from Checkpoint**
+  ```powershell
+  python motor_optimizer_ver5.2_remote.py --resume --mode ansys --generations 20
+  ```
+
+* **Example 6: Warm-Start Optimization Seeded from Best Design CSV**
+  ```powershell
+  python motor_optimizer_ver5.2_remote.py --mode ansys --warm-start best_optimized_design_v5.2.csv --generations 15
+  ```
+
+#### Command-Line Interface (CLI) Parameter Breakdown:
+
+| Option | Default | Description & Usage Guidelines |
+|---|---|---|
+| `--algorithm` | `ga` | Optimization algorithm choice: `ga` (Single-objective Genetic Algorithm) or `nsga2` (Multi-objective Non-dominated Sorting Genetic Algorithm II). |
+| `--pop-size` | `8` | Population size (number of motor design candidates evaluated per generation). |
+| `--generations` | `10` | Maximum number of generations to run. |
+| `--mode` | `offline` | Simulation engine mode: `ansys` (Direct PyAEDT/ActiveX), `matlab` (MATLAB bridge), or `offline` (Surrogate ML models). |
+| `--non-graphical` | `True` | Runs Ansys Maxwell in headless mode without GUI to minimize RAM/CPU consumption. Use `--no-non-graphical` to show GUI. |
+| `--warm-start` | `None` | Path to CSV file to seed initial population (e.g., `--warm-start best_optimized_design_v5.2.csv`). |
+| `--resume` | `False` | Resumes an interrupted optimization run from the saved checkpoint file `optimizer_state.pkl`. |
+| `--plot-all` | `False` | Automatically generates and saves all 4 diagnostic, convergence, and Pareto front plots upon completion. |
+| `--plot-pareto` | `False` | Automatically generates and saves the 2D Pareto optimal front plot. |
+| `--sensitivity` | `False` | Performs Spearman rank correlation sensitivity analysis across all 19 design variables. |
+| `--patience` | `20` | Early stopping threshold: stops optimization if no fitness improvement occurs over N consecutive generations. |
+
+
+### 5. Output Files & Results Structure
+
+Upon completion, the optimization process generates and updates the following files in the project root directory:
+
+#### Primary Data & Report Files:
+* **`best_optimized_design_v5.2.csv`**: Contains the top-performing 19 design variable parameters along with evaluated performance metrics (Efficiency %, Torque Ripple %, Torque N.m, Power Density kW/kg, Material Cost).
+* **`output_vars_iter_<N>.csv`**: Raw FEM simulation exported transient data tables (currents, flux linkages, voltages, torque over time) for candidate `N`.
+* **`simulation_history.csv`**: Full historical archive recording evaluated parameters and performance metrics for ALL individuals across all generations.
+* **`log_history.csv`**: Detailed evaluation log recording simulation time, constraint compliance, and composite scores per candidate.
+* **`optimizer.log`**: Comprehensive system execution log recording timestamps, function execution details, and diagnostics.
+* **`optimizer_state.pkl`**: Binary checkpoint file storing the complete optimization state. Allows resuming interrupted runs using `--resume`.
+* **`optimization_report.md`**: Auto-generated Markdown summary report outlining optimization performance and top design candidates.
+
+#### Diagnostic & Pareto Analysis Charts (enabled via `--plot-all` or `--plot-pareto`):
+* **`pareto_front.png`**: 2D Pareto optimal trade-off curve (Efficiency % vs. Torque Ripple %).
+* **`pareto_3d.png`**: 3D Pareto optimal front visualizing multi-objective trade-offs (Efficiency % vs. Torque Ripple % vs. Material Cost).
+* **`parallel_coordinates.png`**: Parallel coordinates plot illustrating multi-dimensional relationships between 19 design variables and performance objectives.
+* **`convergence_history.png`**: Generation-by-generation convergence trajectory tracking fitness score improvement over time.
+
+#### Sensitivity Analysis (enabled via `--sensitivity`):
+* **`sensitivity_analysis.csv`**: Spearman rank correlation matrix measuring the impact of each of the 19 design variables (e.g., `Air_gap`, `Bridge`, `Mt`, `Mw`) on motor efficiency and torque ripple.
+
+

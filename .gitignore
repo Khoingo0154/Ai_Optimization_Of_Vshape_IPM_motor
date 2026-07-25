@@ -35,3 +35,7 @@ log_history.csv
 # CodeGraph local database and cache
 .codegraph/
 
+# Local VM execution directory
+Ai_Optimization_Of_Vshape_IPM_motor_run-in-vm/
+
+
