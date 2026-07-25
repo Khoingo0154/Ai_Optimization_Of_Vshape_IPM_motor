@@ -20,6 +20,7 @@ Key Upgrades in ver5.2:
 
 import sys
 import os
+import time
 import math
 import random
 import logging
@@ -769,12 +770,51 @@ def detect_stagnation(scores_history: List[float],
 # ---------------------------------------------------------------------------
 # Direct Ansys Maxwell & MATLAB Interop Data Exchange
 # ---------------------------------------------------------------------------
+def _cleanup_temp_project_files(temp_path: Path, i: int, total: int):
+    """Xóa file tạm .aedt và các file/folder rác liên quan với cơ chế thử lại (retry)."""
+    stem = temp_path.stem
+    parent = temp_path.parent
+    files_to_delete = [
+        temp_path,
+        parent / f"{stem}.aedt.lock",
+        parent / f"{stem}.aedt.auto",
+    ]
+    dirs_to_delete = [
+        parent / f"{stem}.aedtresults",
+    ]
+
+    for attempt in range(5):
+        all_deleted = True
+        for f in files_to_delete:
+            if f.exists():
+                try:
+                    f.unlink()
+                except Exception:
+                    all_deleted = False
+
+        for d in dirs_to_delete:
+            if d.exists():
+                try:
+                    shutil.rmtree(d, ignore_errors=True)
+                except Exception:
+                    all_deleted = False
+
+        if all_deleted:
+            logging.info("  [ActiveX] [Cá thể %d/%d] Đã xóa thành công file tạm '%s'.", i, total, temp_path.name)
+            return
+        time.sleep(0.5)
+
+    logging.warning("  [ActiveX] [Cá thể %d/%d] Không thể xóa triệt để một số file tạm '%s' sau 5 lần thử.", i, total, temp_path.name)
+
+
 def run_ansys_direct(population: List[Dict], 
                       root_dir: Path, 
                       output_dir: Path, 
                       ansys_version: str = "2023.2",
                       non_graphical: bool = False) -> bool:
     """Run direct Ansys Maxwell 3D simulations via PyAEDT or win32com ActiveX (No MATLAB required).
+    
+    Uses 'Copy - Run - Close - Delete' per-candidate isolation strategy to prevent RAM memory leaks.
     
     Args:
         population: List of candidate design parameter dicts
@@ -794,29 +834,48 @@ def run_ansys_direct(population: List[Dict],
     if PYAEDT_AVAILABLE:
         logging.info("Connecting to Ansys Maxwell 3D via PyAEDT (non_graphical=%s)...", non_graphical)
         try:
-            m3d = Maxwell3d(
-                projectname=str(project_path),
-                designname="Vshape_IPM",
-                specified_version=ansys_version,
-                non_graphical=non_graphical,
-                new_desktop_session=False,
-                close_on_exit=False
-            )
-            
             for i, ind in enumerate(population, start=1):
-                logging.info("  [PyAEDT] Simulating candidate %d/%d...", i, len(population))
-                for var_name in PARAM_ORDER:
-                    if var_name in ind:
-                        val = ind[var_name]
-                        unit = "deg" if var_name == "thet_deg" else ("mm" if var_name != "Lamda" else "")
-                        m3d[var_name] = f"{val}{unit}" if unit else str(val)
+                timestamp = int(time.time() * 1000)
+                temp_filename = f"temp_design_ind_{i}_{timestamp}.aedt"
+                temp_path = root_dir / temp_filename
 
-                m3d.delete_sampling_solutions()
-                m3d.analyze_setup("Setup1")
+                logging.info("  [PyAEDT] [Cá thể %d/%d] Đang tạo file tạm '%s'...", i, len(population), temp_filename)
+                shutil.copy2(project_path, temp_path)
 
-                csv_path = output_dir / f"output_vars_iter_{i}.csv"
-                m3d.post.export_report_to_csv("Setup1", "OutputVariablesTable", str(csv_path))
-                
+                m3d = None
+                try:
+                    m3d = Maxwell3d(
+                        projectname=str(temp_path),
+                        designname="Vshape_IPM",
+                        specified_version=ansys_version,
+                        non_graphical=non_graphical,
+                        new_desktop_session=False,
+                        close_on_exit=False
+                    )
+                    for var_name in PARAM_ORDER:
+                        if var_name in ind:
+                            val = ind[var_name]
+                            unit = "deg" if var_name == "thet_deg" else ("mm" if var_name != "Lamda" else "")
+                            m3d[var_name] = f"{val}{unit}" if unit else str(val)
+
+                    m3d.delete_sampling_solutions()
+                    m3d.analyze_setup("Setup1")
+
+                    csv_path = output_dir / f"output_vars_iter_{i}.csv"
+                    m3d.post.export_report_to_csv("Setup1", "OutputVariablesTable", str(csv_path))
+                    logging.info("  [PyAEDT] [Cá thể %d/%d] Đã xuất kết quả mô phỏng sang CSV.", i, len(population))
+
+                finally:
+                    if m3d is not None:
+                        try:
+                            logging.info("  [PyAEDT] [Cá thể %d/%d] Đang đóng project tạm để giải phóng RAM...", i, len(population))
+                            m3d.close_project(name=m3d.project_name, save_project=False)
+                        except Exception as e_close:
+                            logging.warning("  Không thể đóng project %s: %s", temp_filename, e_close)
+
+                    time.sleep(0.5)
+                    _cleanup_temp_project_files(temp_path, i, len(population))
+
             return True
         except Exception as e:
             logging.warning(f"PyAEDT execution failed: {e}. Trying win32com ActiveX fallback...")
@@ -845,36 +904,48 @@ def run_ansys_direct(population: List[Dict],
                 raise SimulationError(f"Could not connect to any Ansys Electronics Desktop COM ProgID: {last_err}")
 
             oDesktop = oAnsoftApp.GetAppDesktop()
-            
-            try:
-                oProject = oDesktop.SetActiveProject("Matlab_Ai_Optimization")
-            except Exception:
-                oProject = oDesktop.OpenProject(str(project_path))
-                
-            oDesign = oProject.SetActiveDesign("Vshape_IPM")
-            oAnalysisModule = oDesign.GetModule("AnalysisSetup")
-            oReportModule = oDesign.GetModule("ReportSetup")
 
             for i, ind in enumerate(population, start=1):
-                logging.info("  [ActiveX] Simulating candidate %d/%d...", i, len(population))
-                try:
-                    oDesign.DeleteFullAllSolutions()
-                except Exception:
-                    pass
-                
-                for var_name in PARAM_ORDER:
-                    if var_name in ind:
-                        val = ind[var_name]
-                        unit = "deg" if var_name == "thet_deg" else ("mm" if var_name != "Lamda" else "")
-                        val_str = f"{val}{unit}" if unit else str(val)
-                        oDesign.SetVariableValue(var_name, val_str)
+                timestamp = int(time.time() * 1000)
+                temp_filename = f"temp_design_ind_{i}_{timestamp}.aedt"
+                temp_path = root_dir / temp_filename
 
-                oAnalysisModule.ResetSetupToTimeZero("Setup1")
-                oDesign.Analyze("Setup1")
-                
-                csv_path = output_dir / f"output_vars_iter_{i}.csv"
-                oReportModule.ExportToFile("OutputVariablesTable", str(csv_path))
-                
+                logging.info("  [ActiveX] [Cá thể %d/%d] Đang tạo file tạm '%s'...", i, len(population), temp_filename)
+                shutil.copy2(project_path, temp_path)
+
+                oProject = None
+                try:
+                    oProject = oDesktop.OpenProject(str(temp_path))
+                    oDesign = oProject.SetActiveDesign("Vshape_IPM")
+                    oAnalysisModule = oDesign.GetModule("AnalysisSetup")
+                    oReportModule = oDesign.GetModule("ReportSetup")
+
+                    for var_name in PARAM_ORDER:
+                        if var_name in ind:
+                            val = ind[var_name]
+                            unit = "deg" if var_name == "thet_deg" else ("mm" if var_name != "Lamda" else "")
+                            val_str = f"{val}{unit}" if unit else str(val)
+                            oDesign.SetVariableValue(var_name, val_str)
+
+                    oAnalysisModule.ResetSetupToTimeZero("Setup1")
+                    oDesign.Analyze("Setup1")
+
+                    csv_path = output_dir / f"output_vars_iter_{i}.csv"
+                    oReportModule.ExportToFile("OutputVariablesTable", str(csv_path))
+                    logging.info("  [ActiveX] [Cá thể %d/%d] Đã xuất kết quả mô phỏng sang CSV.", i, len(population))
+
+                finally:
+                    if oProject is not None:
+                        try:
+                            logging.info("  [ActiveX] [Cá thể %d/%d] Đang đóng project tạm để giải phóng RAM...", i, len(population))
+                            proj_name = temp_path.stem
+                            oDesktop.CloseProject(proj_name)
+                        except Exception as e_close:
+                            logging.warning("  Không thể đóng project %s: %s", temp_filename, e_close)
+
+                    time.sleep(0.5)
+                    _cleanup_temp_project_files(temp_path, i, len(population))
+
             return True
         except Exception as e:
             raise SimulationError(f"Direct Ansys COM ActiveX execution failed: {e}")
