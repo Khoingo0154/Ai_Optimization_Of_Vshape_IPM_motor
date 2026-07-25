@@ -1762,6 +1762,7 @@ Examples:
     parser.add_argument("--matlab-exe", type=str, default=r"C:\MATLAB\R2023b\bin\matlab.exe", help="Path to MATLAB executable")
     parser.add_argument("--ansys-version", type=str, default="2023.2", help="Ansys Desktop version string for PyAEDT")
     parser.add_argument("--non-graphical", action="store_true", help="Run Ansys Maxwell in background headless mode")
+    parser.add_argument("--max-workers", type=int, default=1, help="Max parallel simulation workers (default: 1)")
     
     # Score weights
     parser.add_argument("--w-eff", type=float, default=1.0, help="Efficiency weight (default: 1.0)")
