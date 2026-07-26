@@ -28,9 +28,11 @@ import argparse
 import pickle
 import shutil
 import subprocess
+import gc
 from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Tuple, Any, Optional
+
 
 import pandas as pd
 import numpy as np
@@ -883,26 +885,48 @@ def run_ansys_direct(population: List[Dict],
     # Method B: Direct Windows COM / ActiveX (1:1 MATLAB actxserver replacement)
     if PYWIN32_AVAILABLE:
         logging.info("Connecting to Ansys Electronics Desktop via win32com ActiveX...")
-        try:
-            oAnsoftApp = None
-            prog_ids = [
-                "Ansoft.ElectronicsDesktop",
-                "Ansoft.ElectronicsDesktopStudent",
-                "Ansoft.ElectronicsDesktopStudent.2025.2",
-                "Ansoft.ElectronicsDesktop.2025.2",
-            ]
+        prog_ids = [
+            "Ansoft.ElectronicsDesktop",
+            "Ansoft.ElectronicsDesktopStudent",
+            "Ansoft.ElectronicsDesktopStudent.2025.2",
+            "Ansoft.ElectronicsDesktop.2025.2",
+        ]
+
+        def _kill_ansys_zombies():
+            """Force terminate any hung ansysedt.exe background processes to reclaim 100% system RAM."""
+            try:
+                if sys.platform == "win32":
+                    subprocess.run(["taskkill", "/F", "/IM", "ansysedt.exe"], 
+                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+                    subprocess.run(["taskkill", "/F", "/IM", "ansysedtStudent.exe"], 
+                                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+            except Exception:
+                pass
+
+        def _get_ansys_app():
             last_err = None
             for pid in prog_ids:
                 try:
-                    oAnsoftApp = win32com.client.Dispatch(pid)
-                    logging.info(f"Connected to Ansys Electronics Desktop via COM ProgID: '{pid}'")
-                    break
+                    app = win32com.client.Dispatch(pid)
+                    return app, pid
                 except Exception as ex:
                     last_err = ex
-                    
-            if oAnsoftApp is None:
-                raise SimulationError(f"Could not connect to any Ansys Electronics Desktop COM ProgID: {last_err}")
+            return None, last_err
 
+        try:
+            # Force garbage collection before acquiring new desktop session
+            gc.collect()
+            oAnsoftApp, active_pid = _get_ansys_app()
+            if oAnsoftApp is None:
+                # If initial connection failed, clear zombie processes and retry once
+                _kill_ansys_zombies()
+                time.sleep(2.0)
+                oAnsoftApp, active_pid = _get_ansys_app()
+
+            if oAnsoftApp is None:
+                raise SimulationError(f"Could not connect to any Ansys Electronics Desktop COM ProgID: {active_pid}")
+            
+            logging.info(f"Connected to Ansys Electronics Desktop via COM ProgID: '{active_pid}'")
             oDesktop = oAnsoftApp.GetAppDesktop()
 
             for i, ind in enumerate(population, start=1):
@@ -913,41 +937,96 @@ def run_ansys_direct(population: List[Dict],
                 logging.info("  [ActiveX] [Cá thể %d/%d] Đang tạo file tạm '%s'...", i, len(population), temp_filename)
                 shutil.copy2(project_path, temp_path)
 
-                oProject = None
+                max_retries = 2
+                success = False
+                for attempt in range(1, max_retries + 1):
+                    oProject = None
+                    oDesign = None
+                    oAnalysisModule = None
+                    oReportModule = None
+                    try:
+                        # Re-connect if COM desktop connection dropped or was cleared
+                        if oDesktop is None:
+                            gc.collect()
+                            time.sleep(2.0)
+                            oAnsoftApp, active_pid = _get_ansys_app()
+                            if oAnsoftApp is not None:
+                                oDesktop = oAnsoftApp.GetAppDesktop()
+                                logging.info("  [ActiveX] Đã kết nối lại thành công với Ansys Desktop ('%s').", active_pid)
+
+                        if oDesktop is None:
+                            raise SimulationError("Ansys Desktop COM object unavailable.")
+
+                        oProject = oDesktop.OpenProject(str(temp_path))
+                        oDesign = oProject.SetActiveDesign("Vshape_IPM")
+                        oAnalysisModule = oDesign.GetModule("AnalysisSetup")
+                        oReportModule = oDesign.GetModule("ReportSetup")
+
+                        for var_name in PARAM_ORDER:
+                            if var_name in ind:
+                                val = ind[var_name]
+                                unit = "deg" if var_name == "thet_deg" else ("mm" if var_name != "Lamda" else "")
+                                val_str = f"{val}{unit}" if unit else str(val)
+                                oDesign.SetVariableValue(var_name, val_str)
+
+                        oAnalysisModule.ResetSetupToTimeZero("Setup1")
+                        oDesign.Analyze("Setup1")
+
+                        csv_path = output_dir / f"output_vars_iter_{i}.csv"
+                        oReportModule.ExportToFile("OutputVariablesTable", str(csv_path))
+                        logging.info("  [ActiveX] [Cá thể %d/%d] Đã xuất kết quả mô phỏng sang CSV.", i, len(population))
+                        success = True
+                        break
+                    except Exception as e_ind:
+                        logging.warning("  [ActiveX] [Cá thể %d/%d] Lần thử %d/%d thất bại (%s). Đang diệt tiến trình Ansys ngốn RAM và khởi động lại...",
+                                        i, len(population), attempt, max_retries, e_ind)
+                        if oDesktop is not None:
+                            try:
+                                oDesktop.QuitApplication()
+                            except Exception:
+                                pass
+                        oDesktop = None
+                        oAnsoftApp = None
+                        _kill_ansys_zombies()
+                        gc.collect()
+                        time.sleep(3.0)
+                    finally:
+                        if oProject is not None:
+                            try:
+                                logging.info("  [ActiveX] [Cá thể %d/%d] Đang đóng project tạm để giải phóng RAM...", i, len(population))
+                                proj_name = temp_path.stem
+                                if oDesktop is not None:
+                                    oDesktop.CloseProject(proj_name)
+                            except Exception as e_close:
+                                logging.warning("  Không thể đóng project %s: %s", temp_filename, e_close)
+
+                        # Explicitly release local COM object references and collect garbage
+                        del oDesign
+                        del oAnalysisModule
+                        del oReportModule
+                        del oProject
+                        gc.collect()
+
+                if not success:
+                    raise SimulationError(f"Cá thể {i}/{len(population)} mô phỏng thất bại sau {max_retries} lần thử.")
+
+                time.sleep(0.5)
+                _cleanup_temp_project_files(temp_path, i, len(population))
+
+            # Quit Ansys Application at the end of each generation to reset RAM usage to 0 MB leak
+            if oDesktop is not None:
                 try:
-                    oProject = oDesktop.OpenProject(str(temp_path))
-                    oDesign = oProject.SetActiveDesign("Vshape_IPM")
-                    oAnalysisModule = oDesign.GetModule("AnalysisSetup")
-                    oReportModule = oDesign.GetModule("ReportSetup")
-
-                    for var_name in PARAM_ORDER:
-                        if var_name in ind:
-                            val = ind[var_name]
-                            unit = "deg" if var_name == "thet_deg" else ("mm" if var_name != "Lamda" else "")
-                            val_str = f"{val}{unit}" if unit else str(val)
-                            oDesign.SetVariableValue(var_name, val_str)
-
-                    oAnalysisModule.ResetSetupToTimeZero("Setup1")
-                    oDesign.Analyze("Setup1")
-
-                    csv_path = output_dir / f"output_vars_iter_{i}.csv"
-                    oReportModule.ExportToFile("OutputVariablesTable", str(csv_path))
-                    logging.info("  [ActiveX] [Cá thể %d/%d] Đã xuất kết quả mô phỏng sang CSV.", i, len(population))
-
-                finally:
-                    if oProject is not None:
-                        try:
-                            logging.info("  [ActiveX] [Cá thể %d/%d] Đang đóng project tạm để giải phóng RAM...", i, len(population))
-                            proj_name = temp_path.stem
-                            oDesktop.CloseProject(proj_name)
-                        except Exception as e_close:
-                            logging.warning("  Không thể đóng project %s: %s", temp_filename, e_close)
-
-                    time.sleep(0.5)
-                    _cleanup_temp_project_files(temp_path, i, len(population))
-
+                    logging.info("  [ActiveX] Đóng ứng dụng Ansys Desktop để giải phóng 100%% RAM cho thế hệ tiếp theo...")
+                    oDesktop.QuitApplication()
+                except Exception:
+                    pass
+            oDesktop = None
+            oAnsoftApp = None
+            gc.collect()
             return True
         except Exception as e:
+            _kill_ansys_zombies()
+            gc.collect()
             raise SimulationError(f"Direct Ansys COM ActiveX execution failed: {e}")
 
     raise SimulationError("Neither 'pyaedt' nor 'pywin32' is available in Python environment.")
@@ -1760,9 +1839,10 @@ Examples:
     parser.add_argument("--seed", type=int, default=None, help="Random seed for reproducibility")
     parser.add_argument("--resume", action="store_true", help="Resume from checkpoint")
     parser.add_argument("--matlab-exe", type=str, default=r"C:\MATLAB\R2023b\bin\matlab.exe", help="Path to MATLAB executable")
-    parser.add_argument("--ansys-version", type=str, default="2023.2", help="Ansys Desktop version string for PyAEDT")
-    parser.add_argument("--non-graphical", action="store_true", help="Run Ansys Maxwell in background headless mode")
+    parser.add_argument("--non-graphical", action="store_true", default=True, help="Run Ansys Maxwell in background headless mode (default: True)")
+    parser.add_argument("--show-gui", action="store_true", help="Run Ansys Maxwell with GUI visible (disables headless mode)")
     parser.add_argument("--max-workers", type=int, default=1, help="Max parallel simulation workers (default: 1)")
+
     
     # Score weights
     parser.add_argument("--w-eff", type=float, default=1.0, help="Efficiency weight (default: 1.0)")
@@ -1787,6 +1867,9 @@ Examples:
     parser.add_argument("--no-report", action="store_true", help="Skip report generation")
     
     args = parser.parse_args()
+    if args.show_gui:
+        args.non_graphical = False
+
     
     # Handle --test flag
     if args.test:
