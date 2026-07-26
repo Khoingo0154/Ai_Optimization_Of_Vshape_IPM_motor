@@ -860,8 +860,15 @@ def run_ansys_direct(population: List[Dict],
                             unit = "deg" if var_name == "thet_deg" else ("mm" if var_name != "Lamda" else "")
                             m3d[var_name] = f"{val}{unit}" if unit else str(val)
 
+                    try:
+                        if hasattr(m3d, "setups") and m3d.setups:
+                            m3d.setups[0].props["SaveFieldsType"] = "None"
+                    except Exception:
+                        pass
+
                     m3d.delete_sampling_solutions()
                     m3d.analyze_setup("Setup1")
+
 
                     csv_path = output_dir / f"output_vars_iter_{i}.csv"
                     m3d.post.export_report_to_csv("Setup1", "OutputVariablesTable", str(csv_path))
@@ -975,8 +982,14 @@ def run_ansys_direct(population: List[Dict],
                                 val_str = f"{val}{unit}" if unit else str(val)
                                 oDesign.SetVariableValue(var_name, val_str)
 
+                        try:
+                            oAnalysisModule.EditSetup("Setup1", ["NAME:Setup1", "SaveFieldsType:=", "None"])
+                        except Exception:
+                            pass
+
                         oAnalysisModule.ResetSetupToTimeZero("Setup1")
                         oDesign.Analyze("Setup1")
+
 
                         csv_path = output_dir / f"output_vars_iter_{i}.csv"
                         oReportModule.ExportToFile("OutputVariablesTable", str(csv_path))
