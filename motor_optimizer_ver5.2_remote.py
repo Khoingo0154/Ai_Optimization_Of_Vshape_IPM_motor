@@ -97,37 +97,37 @@ def _make_ind_key(ind: dict) -> tuple:
 
 def setup_logger(log_filename="run_log.txt"):
     """
-    Cấu hình logger ghi đồng thời ra console và file.
-    Không làm thay đổi logic chạy, chỉ bổ sung quan sát.
+    Configure logger to write simultaneously to console and log file.
+    Does not modify execution logic; provides runtime observability.
     """
-    # Sử dụng root logger để tất cả các hàm logging.info, logging.warning...
-    # của script đều được xử lý bởi các handlers này.
+    # Use root logger so that logging calls across the script are handled by these handlers
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
     
-    # Xóa các handler cũ nếu có (tránh ghi trùng khi chạy lại trong cùng session)
+    # Clear existing handlers if present (prevents duplicate logs in same session)
     if logger.handlers:
         logger.handlers.clear()
 
-    # Format: [Thời gian] [Mức độ] Nội dung
+    # Format: [Timestamp] [Level] Message
     formatter = logging.Formatter(
         '[%(asctime)s] [%(levelname)s] %(message)s', 
         datefmt='%Y-%m-%d %H:%M:%S'
     )
 
-    # 1. Handler ghi ra file run_log.txt
+    # 1. File Logger Handler (run_log.txt)
     file_handler = logging.FileHandler(log_filename, encoding='utf-8')
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 
-    # 2. Handler ghi ra màn hình (Console)
+    # 2. Console Handler
     console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setLevel(logging.INFO) # Chỉ hiện INFO trở lên trên màn hình cho gọn
+    console_handler.setLevel(logging.INFO) # Display INFO level and above on console
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
 
     return logger
+
 
 
 # ---------------------------------------------------------------------------
@@ -773,7 +773,7 @@ def detect_stagnation(scores_history: List[float],
 # Direct Ansys Maxwell & MATLAB Interop Data Exchange
 # ---------------------------------------------------------------------------
 def _cleanup_temp_project_files(temp_path: Path, i: int, total: int):
-    """Xóa file tạm .aedt và các file/folder rác liên quan với cơ chế thử lại (retry)."""
+    """Delete temporary .aedt project files and associated cleanup directories with retry mechanism."""
     stem = temp_path.stem
     parent = temp_path.parent
     files_to_delete = [
@@ -802,11 +802,11 @@ def _cleanup_temp_project_files(temp_path: Path, i: int, total: int):
                     all_deleted = False
 
         if all_deleted:
-            logging.info("  [ActiveX] [Cá thể %d/%d] Đã xóa thành công file tạm '%s'.", i, total, temp_path.name)
+            logging.info("  [ActiveX] [Candidate %d/%d] Successfully deleted temporary file '%s'.", i, total, temp_path.name)
             return
         time.sleep(0.5)
 
-    logging.warning("  [ActiveX] [Cá thể %d/%d] Không thể xóa triệt để một số file tạm '%s' sau 5 lần thử.", i, total, temp_path.name)
+    logging.warning("  [ActiveX] [Candidate %d/%d] Could not completely delete temporary files '%s' after 5 attempts.", i, total, temp_path.name)
 
 
 def run_ansys_direct(population: List[Dict], 
@@ -841,7 +841,7 @@ def run_ansys_direct(population: List[Dict],
                 temp_filename = f"temp_design_ind_{i}_{timestamp}.aedt"
                 temp_path = root_dir / temp_filename
 
-                logging.info("  [PyAEDT] [Cá thể %d/%d] Đang tạo file tạm '%s'...", i, len(population), temp_filename)
+                logging.info("  [PyAEDT] [Candidate %d/%d] Creating temporary file '%s'...", i, len(population), temp_filename)
                 shutil.copy2(project_path, temp_path)
 
                 m3d = None
@@ -872,15 +872,16 @@ def run_ansys_direct(population: List[Dict],
 
                     csv_path = output_dir / f"output_vars_iter_{i}.csv"
                     m3d.post.export_report_to_csv("Setup1", "OutputVariablesTable", str(csv_path))
-                    logging.info("  [PyAEDT] [Cá thể %d/%d] Đã xuất kết quả mô phỏng sang CSV.", i, len(population))
+                    logging.info("  [PyAEDT] [Candidate %d/%d] Simulation results exported to CSV.", i, len(population))
 
                 finally:
                     if m3d is not None:
                         try:
-                            logging.info("  [PyAEDT] [Cá thể %d/%d] Đang đóng project tạm để giải phóng RAM...", i, len(population))
+                            logging.info("  [PyAEDT] [Candidate %d/%d] Closing temporary project to release RAM...", i, len(population))
                             m3d.close_project(name=m3d.project_name, save_project=False)
                         except Exception as e_close:
-                            logging.warning("  Không thể đóng project %s: %s", temp_filename, e_close)
+                            logging.warning("  Could not close project %s: %s", temp_filename, e_close)
+
 
                     time.sleep(0.5)
                     _cleanup_temp_project_files(temp_path, i, len(population))
@@ -947,7 +948,7 @@ def run_ansys_direct(population: List[Dict],
                 temp_filename = f"temp_design_ind_{i}_{timestamp}.aedt"
                 temp_path = root_dir / temp_filename
 
-                logging.info("  [ActiveX] [Cá thể %d/%d] Đang tạo file tạm '%s'...", i, len(population), temp_filename)
+                logging.info("  [ActiveX] [Candidate %d/%d] Creating temporary file '%s'...", i, len(population), temp_filename)
                 shutil.copy2(project_path, temp_path)
 
                 max_retries = 2
@@ -965,7 +966,7 @@ def run_ansys_direct(population: List[Dict],
                             oAnsoftApp, active_pid = _get_ansys_app()
                             if oAnsoftApp is not None:
                                 oDesktop = oAnsoftApp.GetAppDesktop()
-                                logging.info("  [ActiveX] Đã kết nối lại thành công với Ansys Desktop ('%s').", active_pid)
+                                logging.info("  [ActiveX] Successfully re-connected to Ansys Desktop ('%s').", active_pid)
 
                         if oDesktop is None:
                             raise SimulationError("Ansys Desktop COM object unavailable.")
@@ -981,7 +982,7 @@ def run_ansys_direct(population: List[Dict],
                                 unit = "deg" if var_name == "thet_deg" else ("mm" if var_name != "Lamda" else "")
                                 val_str = f"{val}{unit}" if unit else str(val)
                                 oDesign.SetVariableValue(var_name, val_str)
-                        # Tắt lưu trường 3D trước khi bấm Analyze:
+                        # Disable 3D field saving before calling Analyze:
                         try:
                             oAnalysisModule.EditSetup("Setup1", ["NAME:Setup1", "SaveFieldsType:=", "None"])
                         except Exception:
@@ -993,11 +994,11 @@ def run_ansys_direct(population: List[Dict],
 
                         csv_path = output_dir / f"output_vars_iter_{i}.csv"
                         oReportModule.ExportToFile("OutputVariablesTable", str(csv_path))
-                        logging.info("  [ActiveX] [Cá thể %d/%d] Đã xuất kết quả mô phỏng sang CSV.", i, len(population))
+                        logging.info("  [ActiveX] [Candidate %d/%d] FEA simulation results exported to CSV.", i, len(population))
                         success = True
                         break
                     except Exception as e_ind:
-                        logging.warning("  [ActiveX] [Cá thể %d/%d] Lần thử %d/%d thất bại (%s). Đang diệt tiến trình Ansys ngốn RAM và khởi động lại...",
+                        logging.warning("  [ActiveX] [Candidate %d/%d] Attempt %d/%d failed (%s). Terminating memory-heavy Ansys process and restarting...",
                                         i, len(population), attempt, max_retries, e_ind)
                         if oDesktop is not None:
                             try:
@@ -1012,12 +1013,12 @@ def run_ansys_direct(population: List[Dict],
                     finally:
                         if oProject is not None:
                             try:
-                                logging.info("  [ActiveX] [Cá thể %d/%d] Đang đóng project tạm để giải phóng RAM...", i, len(population))
+                                logging.info("  [ActiveX] [Candidate %d/%d] Closing temporary project to release RAM...", i, len(population))
                                 proj_name = temp_path.stem
                                 if oDesktop is not None:
                                     oDesktop.CloseProject(proj_name)
                             except Exception as e_close:
-                                logging.warning("  Không thể đóng project %s: %s", temp_filename, e_close)
+                                logging.warning("  Could not close project %s: %s", temp_filename, e_close)
 
                         # Explicitly release local COM object references and collect garbage
                         del oDesign
@@ -1027,7 +1028,7 @@ def run_ansys_direct(population: List[Dict],
                         gc.collect()
 
                 if not success:
-                    raise SimulationError(f"Cá thể {i}/{len(population)} mô phỏng thất bại sau {max_retries} lần thử.")
+                    raise SimulationError(f"Candidate {i}/{len(population)} simulation failed after {max_retries} attempts.")
 
                 time.sleep(0.5)
                 _cleanup_temp_project_files(temp_path, i, len(population))
@@ -1035,10 +1036,11 @@ def run_ansys_direct(population: List[Dict],
             # Quit Ansys Application at the end of each generation to reset RAM usage to 0 MB leak
             if oDesktop is not None:
                 try:
-                    logging.info("  [ActiveX] Đóng ứng dụng Ansys Desktop để giải phóng 100%% RAM cho thế hệ tiếp theo...")
+                    logging.info("  [ActiveX] Closing Ansys Desktop application to release 100%% RAM for next generation...")
                     oDesktop.QuitApplication()
                 except Exception:
                     pass
+
             oDesktop = None
             oAnsoftApp = None
             gc.collect()
@@ -1209,17 +1211,17 @@ def _parse_csv_outputs(uncached_population: List[Dict], output_dir: Path, score_
     """Parse CSV simulation outputs exported by Ansys/MATLAB with robust NaN/empty handling."""
     uncached_metrics = []
     
-    # Helper nội bộ: trích xuất số an toàn, tự động bỏ qua NaN/chuỗi lỗi
+    # Internal helper: safely extract numeric metrics, ignoring NaN/error values
     def safe_extract(df: pd.DataFrame, col_name: str, fallback: float, 
                      use_window_mean: bool = True, window: int = 10) -> float:
         if col_name is None or col_name not in df.columns:
             return fallback
-        # Chuyển sang numeric, ép lỗi thành NaN, rồi drop hết NaN
+        # Convert to numeric, coerce invalid values to NaN, and drop NaN
         series = pd.to_numeric(df[col_name], errors="coerce").dropna()
         if series.empty:
             return fallback
         if use_window_mean:
-            # Lấy tối đa `window` dòng cuối cùng (pandas tự xử lý nếu len < window)
+            # Take mean of last window rows (pandas handles len < window gracefully)
             return float(series.iloc[-window:].mean())
         return float(series.iloc[-1])
 
@@ -1237,13 +1239,14 @@ def _parse_csv_outputs(uncached_population: List[Dict], output_dir: Path, score_
                 if df.empty:
                     raise ValueError("CSV file is completely empty.")
 
-                # Tìm cột tự động linh hoạt hơn
+                # Dynamically detect target metric columns
                 eff_col = next((c for c in df.columns if "Eff" in c), None)
                 tr_col = next((c for c in df.columns if "Ripple" in c or "TorqueRip" in c), None)
                 cost_col = next((c for c in df.columns if "Cost" in c or "TotCost" in c), None)
                 pwr_col = next((c for c in df.columns if "Power" in c or "PwrDens" in c), None)
 
-                # Trích xuất an toàn
+                # Safely extract metrics
+
                 eff = safe_extract(df, eff_col, fallback=90.0, use_window_mean=True, window=10)
                 tr = safe_extract(df, tr_col, fallback=15.0, use_window_mean=True, window=10)
                 cost = safe_extract(df, cost_col, fallback=100.0, use_window_mean=False)
@@ -1830,7 +1833,8 @@ def load_warm_start(csv_path: Path, bounds: dict, pop_size: int) -> List[dict]:
 def clean_post_run_temp_files(root_dir: Path, output_dir: Path):
 
     """Clean up lingering temporary files (.aedt, .aedtresults, .lock, output_vars_iter_*.csv) after optimization completes."""
-    logging.info("🧹 Dọn dẹp các file đệm tạm thời (temp files, lock files, output_vars_iter_*.csv)...")
+    logging.info("🧹 Cleaning up temporary project files, lock files, and raw CSV files...")
+
     
     # 1. Clean temp AEDT project files & directories
     for temp_pattern in ["temp_design_ind_*.aedt*", "*.lock"]:
