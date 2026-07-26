@@ -981,7 +981,7 @@ def run_ansys_direct(population: List[Dict],
                                 unit = "deg" if var_name == "thet_deg" else ("mm" if var_name != "Lamda" else "")
                                 val_str = f"{val}{unit}" if unit else str(val)
                                 oDesign.SetVariableValue(var_name, val_str)
-
+                        # Tắt lưu trường 3D trước khi bấm Analyze:
                         try:
                             oAnalysisModule.EditSetup("Setup1", ["NAME:Setup1", "SaveFieldsType:=", "None"])
                         except Exception:
@@ -1826,9 +1826,42 @@ def load_warm_start(csv_path: Path, bounds: dict, pop_size: int) -> List[dict]:
     )
     return from_csv + padded
 
+
+def clean_post_run_temp_files(root_dir: Path, output_dir: Path):
+
+    """Clean up lingering temporary files (.aedt, .aedtresults, .lock, output_vars_iter_*.csv) after optimization completes."""
+    logging.info("🧹 Dọn dẹp các file đệm tạm thời (temp files, lock files, output_vars_iter_*.csv)...")
+    
+    # 1. Clean temp AEDT project files & directories
+    for temp_pattern in ["temp_design_ind_*.aedt*", "*.lock"]:
+        for p in root_dir.glob(temp_pattern):
+            try:
+                if p.is_dir():
+                    shutil.rmtree(p, ignore_errors=True)
+                elif p.is_file():
+                    p.unlink(missing_ok=True)
+            except Exception:
+                pass
+                
+    # 2. Clean output_vars_iter_*.csv files (all simulation metrics are permanently saved in simulation_history.csv)
+    for csv_file in output_dir.glob("output_vars_iter_*.csv"):
+        try:
+            csv_file.unlink(missing_ok=True)
+        except Exception:
+            pass
+
+    if root_dir != output_dir:
+        for csv_file in root_dir.glob("output_vars_iter_*.csv"):
+            try:
+                csv_file.unlink(missing_ok=True)
+            except Exception:
+                pass
+
+
 # ---------------------------------------------------------------------------
 # Main Driver
 # ---------------------------------------------------------------------------
+
 def main():
     parser = argparse.ArgumentParser(
         description="V-Shape IPM Motor AI Optimizer v5.2",
@@ -1861,6 +1894,8 @@ Examples:
     parser.add_argument("--non-graphical", action="store_true", default=True, help="Run Ansys Maxwell in background headless mode (default: True)")
     parser.add_argument("--show-gui", action="store_true", help="Run Ansys Maxwell with GUI visible (disables headless mode)")
     parser.add_argument("--max-workers", type=int, default=1, help="Max parallel simulation workers (default: 1)")
+    parser.add_argument("--keep-temp", action="store_true", help="Keep temporary output_vars_iter_*.csv and AEDT project files after execution")
+
 
     
     # Score weights
@@ -2174,10 +2209,11 @@ Examples:
         plot_parallel_coordinates(history_path, output_dir)
         plot_convergence(scores_history, output_dir)
     
-    if args.sensitivity:
-        perform_sensitivity_analysis(history_path, bounds, output_dir)
-    
+    if not args.keep_temp:
+        clean_post_run_temp_files(root_dir, output_dir)
+
     logging.info("\nOptimization finished successfully. All outputs in: %s", output_dir)
+
 
 
 if __name__ == "__main__":
