@@ -133,10 +133,13 @@ The optimization engine tunes **19 key geometric and electrical parameters**:
 ## 💻 Environment Setup & Installation
 
 > [!IMPORTANT]
-> **Pre-Execution Reminder: Always Clear Lingering `.lock` Files!**  
-> If Ansys Maxwell or a previous simulation crashed or was stopped abruptly, lingering `.lock` files (e.g. `Matlab_Ai_Optimization.aedt.lock`) will prevent Ansys from opening project files.  
-> **PowerShell Command**: `Remove-Item -Path "*.lock" -Force -ErrorAction SilentlyContinue`  
-> **CMD Command**: `del /f /q *.lock`
+> **Pre-Execution Reminder: Always Clear Lingering Lock & Temporary Files!**  
+> Before launching a new optimization run, always delete lingering `.lock` files and temporary project files to prevent file access conflicts and ensure clean execution:  
+> **PowerShell Command**: `Remove-Item -Path "*.lock", "temp_design_ind_*.aedt*", "output_vars_iter_*.csv" -Recurse -Force -ErrorAction SilentlyContinue`  
+> **CMD Command**: `del /f /q *.lock temp_design_ind_*.aedt* output_vars_iter_*.csv`
+
+
+
 
 ### 1. Create Virtual Environment
 
@@ -178,21 +181,26 @@ Ensure the following input files are located in the project root directory:
 
 ---
 
-## 🧹 Pre-Execution: Clearing Lock Files
+## 🧹 Pre-Execution: Clearing Lock & Temporary Files
 
-If Ansys Maxwell or a previous optimization run was interrupted abruptly, AEDT lock files may remain in the workspace (e.g. `Matlab_Ai_Optimization.aedt.lock`), blocking file access.
+If Ansys Maxwell or a previous optimization run was interrupted abruptly, lingering AEDT lock files (e.g. `Matlab_Ai_Optimization.aedt.lock`) and temporary candidate project files (`temp_design_ind_*.aedt*`) may remain in the workspace, blocking file access or consuming disk space.
 
-**Always clear lock files before launching a new optimization run:**
+**Always clear lock files and temporary simulation files before launching a new optimization run:**
 
 - **Windows PowerShell**:
   ```powershell
   Remove-Item -Path "*.lock" -Force -ErrorAction SilentlyContinue
+  Remove-Item -Path "temp_design_ind_*.aedt*" -Recurse -Force -ErrorAction SilentlyContinue
+  Remove-Item -Path "output_vars_iter_*.csv" -Force -ErrorAction SilentlyContinue
   ```
 
 - **Command Prompt (CMD)**:
   ```cmd
   del /f /q *.lock
+  del /f /q temp_design_ind_*.aedt*
+  del /f /q output_vars_iter_*.csv
   ```
+
 
 ---
 
