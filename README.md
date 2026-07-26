@@ -92,12 +92,12 @@ Ai_Optimization_Of_Vshape_IPM_motor/
 ├── convergence_history.png                # Fitness score convergence chart across generations
 ├── sensitivity_analysis.csv               # Spearman rank correlation sensitivity table
 │
-├── AGENTS.md                              # Instructions & technical guidelines for AI Agents
 ├── Technical_Reference.md                  # Deep technical reference documentation
 ├── workflow_optimization.md                # System workflow & Mermaid diagrams
 ├── variable_evolution_analysis.md         # Variable evolution & parameter trend analysis
 ├── Optimization Requirements.pdf          # Baseline project requirement specification
 └── README.md                              # Main GitHub documentation (this file)
+
 ```
 
 ---
