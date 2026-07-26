@@ -926,8 +926,14 @@ def run_ansys_direct(population: List[Dict],
             if oAnsoftApp is None:
                 raise SimulationError(f"Could not connect to any Ansys Electronics Desktop COM ProgID: {active_pid}")
             
-            logging.info(f"Connected to Ansys Electronics Desktop via COM ProgID: '{active_pid}'")
+            logging.info(f"Connected to Ansys Electronics Desktop via COM ProgID: '{active_pid}' (non_graphical={non_graphical})")
             oDesktop = oAnsoftApp.GetAppDesktop()
+            if non_graphical and oDesktop is not None:
+                try:
+                    oDesktop.SetIconic(True)
+                except Exception:
+                    pass
+
 
             for i, ind in enumerate(population, start=1):
                 timestamp = int(time.time() * 1000)
