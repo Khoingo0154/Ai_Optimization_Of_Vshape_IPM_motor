@@ -132,6 +132,12 @@ The optimization engine tunes **19 key geometric and electrical parameters**:
 
 ## 💻 Environment Setup & Installation
 
+> [!IMPORTANT]
+> **Pre-Execution Reminder: Always Clear Lingering `.lock` Files!**  
+> If Ansys Maxwell or a previous simulation crashed or was stopped abruptly, lingering `.lock` files (e.g. `Matlab_Ai_Optimization.aedt.lock`) will prevent Ansys from opening project files.  
+> **PowerShell Command**: `Remove-Item -Path "*.lock" -Force -ErrorAction SilentlyContinue`  
+> **CMD Command**: `del /f /q *.lock`
+
 ### 1. Create Virtual Environment
 
 Open Terminal, PowerShell, or Command Prompt in the repository directory and run:
@@ -139,6 +145,7 @@ Open Terminal, PowerShell, or Command Prompt in the repository directory and run
 ```bash
 python -m venv .venv
 ```
+
 
 ### 2. Activate Virtual Environment
 
@@ -238,17 +245,34 @@ python motor_optimizer_ver5.2_remote.py --resume --mode ansys --generations 20
 
 | Flag | Default | Description |
 |---|---|---|
+| `--mode` | `offline` | Simulation execution mode: `ansys` (Direct PyAEDT/COM, no MATLAB), `matlab` (MATLAB bridge), or `offline` (Surrogate ML). |
 | `--algorithm` | `ga` | Optimization algorithm choice: `ga` (Genetic Algorithm) or `nsga2` (Multi-Objective NSGA-II). |
-| `--pop-size` | `8` | Population size per generation. |
+| `--pop-size` | `8` | Population size per generation (number of motor candidate designs per generation). |
 | `--generations` | `10` | Maximum number of generations to run. |
-| `--mode` | `offline` | Simulation execution mode: `ansys`, `matlab`, or `offline`. |
-| `--non-graphical` | `True` | Runs Ansys Maxwell in headless mode to save RAM/CPU resources. |
-| `--warm-start` | `None` | Path to CSV file to seed the initial population. |
-| `--resume` | `False` | Resumes optimization from checkpoint file `optimizer_state.pkl`. |
-| `--plot-all` | `False` | Automatically generates all 4 diagnostic and Pareto charts upon completion. |
-| `--plot-pareto` | `False` | Generates 2D Pareto optimal front plot. |
-| `--sensitivity` | `False` | Performs Spearman rank correlation sensitivity analysis across design variables. |
-| `--patience` | `20` | Early stopping threshold (generations without improvement). |
+| `--crossover` | `0.7` | Uniform crossover probability between parent pairs (70%). |
+| `--mutation` | `0.2` | Step offset mutation rate per design variable gene (20%). |
+| `--seed` | `None` | Seed value for random number generator to ensure experimental reproducibility. |
+| `--resume` | `False` | Resumes optimization execution from checkpoint file `optimizer_state.pkl`. |
+| `--warm-start` | `None` | Path to CSV file to seed initial population (e.g. `--warm-start best_optimized_design_v5.2.csv`). |
+| `--non-graphical` | `True` | Runs Ansys Maxwell in background headless mode (saves 60-70% RAM/CPU resources). |
+| `--show-gui` | `False` | Forces Ansys Maxwell 3D GUI to display visibly (disables background headless mode). |
+| `--ansys-version` | `2023.2` | Ansys Electronics Desktop version for PyAEDT (e.g. `2023.2`, `2025.2`). |
+| `--matlab-exe` | `matlab` | Path to `matlab.exe` executable when using `--mode matlab`. |
+| `--max-workers` | `1` | Number of parallel simulation worker threads. |
+| `--w-eff` | `1.0` | Objective weight factor for motor efficiency maximization (%). |
+| `--w-ripple` | `1.0` | Objective weight penalty factor for torque ripple minimization (%). |
+| `--w-pwr` | `0.5` | Objective weight bonus factor for power density (kW/kg). |
+| `--w-cost` | `0.05` | Objective weight penalty factor for material cost ($). |
+| `--patience` | `20` | Early stopping threshold (maximum consecutive generations without score improvement). |
+| `--min-delta` | `0.01` | Minimum score improvement required to reset early stopping counter. |
+| `--plot-all` | `False` | Automatically generates all 4 diagnostic & Pareto charts (2D, 3D, Parallel Coordinates, Convergence). |
+| `--plot-pareto` | `False` | Generates 2D Pareto optimal front plot (Efficiency vs. Torque Ripple). |
+| `--sensitivity` | `False` | Performs Spearman rank correlation sensitivity analysis across 19 design variables. |
+| `--no-ml` | `False` | Disables machine learning surrogate model caching. |
+| `--no-report` | `False` | Skips auto-generation of Markdown summary report `optimization_report.md`. |
+| `--keep-temp` | `False` | Retains raw temporary simulation files (`output_vars_iter_*.csv`, `.aedt`) after completion. |
+| `--test` | `False` | Runs 14 automated built-in integration unit tests and exits. |
+
 
 ---
 
