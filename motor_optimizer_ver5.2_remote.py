@@ -1025,26 +1025,27 @@ def run_ansys_direct(population: List[Dict],
                         del oAnalysisModule
                         del oReportModule
                         del oProject
-                        gc.collect()
-
                 if not success:
                     raise SimulationError(f"Candidate {i}/{len(population)} simulation failed after {max_retries} attempts.")
 
                 time.sleep(0.5)
                 _cleanup_temp_project_files(temp_path, i, len(population))
 
-            # Quit Ansys Application at the end of each generation to reset RAM usage to 0 MB leak
-            if oDesktop is not None:
-                try:
-                    logging.info("  [ActiveX] Closing Ansys Desktop application to release 100%% RAM for next generation...")
-                    oDesktop.QuitApplication()
-                except Exception:
-                    pass
 
-            oDesktop = None
-            oAnsoftApp = None
-            gc.collect()
+                # Per-Candidate Reset: Quit Ansys session & reclaim 100% RAM after EVERY single candidate
+                if oDesktop is not None:
+                    try:
+                        logging.info("  [ActiveX] [Candidate %d/%d] Resetting Ansys Desktop session to reclaim 100%% RAM...", i, len(population))
+                        oDesktop.QuitApplication()
+                    except Exception:
+                        pass
+                oDesktop = None
+                oAnsoftApp = None
+                _kill_ansys_zombies()
+                gc.collect()
+
             return True
+
         except Exception as e:
             _kill_ansys_zombies()
             gc.collect()
