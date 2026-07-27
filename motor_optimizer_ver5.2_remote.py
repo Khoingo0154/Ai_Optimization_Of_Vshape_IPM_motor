@@ -1013,12 +1013,11 @@ def run_ansys_direct(population: List[Dict],
                     finally:
                         if oProject is not None:
                             try:
-                                logging.info("  [ActiveX] [Candidate %d/%d] Closing temporary project & minimizing window for Cloudpaging...", i, len(population))
+                                logging.info("  [ActiveX] [Candidate %d/%d] Closing temporary project...", i, len(population))
                                 proj_name = temp_path.stem
                                 if oDesktop is not None:
-                                    oDesktop.CloseProject(proj_name)
                                     try:
-                                        oDesktop.SetIconic(True)
+                                        oDesktop.CloseProject(proj_name)
                                     except Exception:
                                         pass
                             except Exception as e_close:
@@ -1031,6 +1030,7 @@ def run_ansys_direct(population: List[Dict],
                         del oProject
                         gc.collect()
 
+
                 if not success:
                     raise SimulationError(f"Candidate {i}/{len(population)} simulation failed after {max_retries} attempts.")
 
@@ -1039,23 +1039,11 @@ def run_ansys_direct(population: List[Dict],
                 gc.collect()
 
 
-                # Cloudpaging Safe Mode: Keep session active, minimize window & collect garbage
-                if oDesktop is not None:
-                    try:
-                        oDesktop.SetIconic(True)
-                    except Exception:
-                        pass
                 gc.collect()
 
-
-            # End of generation: Minimize window & collect garbage (Cloudpaging Safe Mode)
-            if oDesktop is not None:
-                try:
-                    oDesktop.SetIconic(True)
-                except Exception:
-                    pass
             gc.collect()
             return True
+
 
         except Exception as e:
             _kill_ansys_zombies()
