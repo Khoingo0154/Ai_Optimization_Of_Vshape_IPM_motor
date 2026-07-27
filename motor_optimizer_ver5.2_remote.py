@@ -1013,10 +1013,14 @@ def run_ansys_direct(population: List[Dict],
                     finally:
                         if oProject is not None:
                             try:
-                                logging.info("  [ActiveX] [Candidate %d/%d] Closing temporary project to release RAM...", i, len(population))
+                                logging.info("  [ActiveX] [Candidate %d/%d] Closing temporary project & minimizing window for Cloudpaging...", i, len(population))
                                 proj_name = temp_path.stem
                                 if oDesktop is not None:
                                     oDesktop.CloseProject(proj_name)
+                                    try:
+                                        oDesktop.SetIconic(True)
+                                    except Exception:
+                                        pass
                             except Exception as e_close:
                                 logging.warning("  Could not close project %s: %s", temp_filename, e_close)
 
@@ -1025,25 +1029,32 @@ def run_ansys_direct(population: List[Dict],
                         del oAnalysisModule
                         del oReportModule
                         del oProject
+                        gc.collect()
+
                 if not success:
                     raise SimulationError(f"Candidate {i}/{len(population)} simulation failed after {max_retries} attempts.")
 
                 time.sleep(0.5)
                 _cleanup_temp_project_files(temp_path, i, len(population))
-
-
-                # Per-Candidate Reset: Quit Ansys session & reclaim 100% RAM after EVERY single candidate
-                if oDesktop is not None:
-                    try:
-                        logging.info("  [ActiveX] [Candidate %d/%d] Resetting Ansys Desktop session to reclaim 100%% RAM...", i, len(population))
-                        oDesktop.QuitApplication()
-                    except Exception:
-                        pass
-                oDesktop = None
-                oAnsoftApp = None
-                _kill_ansys_zombies()
                 gc.collect()
 
+
+                # Cloudpaging Safe Mode: Keep session active, minimize window & collect garbage
+                if oDesktop is not None:
+                    try:
+                        oDesktop.SetIconic(True)
+                    except Exception:
+                        pass
+                gc.collect()
+
+
+            # End of generation: Minimize window & collect garbage (Cloudpaging Safe Mode)
+            if oDesktop is not None:
+                try:
+                    oDesktop.SetIconic(True)
+                except Exception:
+                    pass
+            gc.collect()
             return True
 
         except Exception as e:
