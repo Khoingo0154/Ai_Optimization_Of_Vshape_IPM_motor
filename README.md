@@ -145,28 +145,10 @@ Basic production run (Ansys Maxwell FEA):
 python "motor_optimizer_ver5.2(fix lan3)_remote.py" --mode ansys --pop-size 8 --generations 10 --plot-all
 ```
 
-Verify installation quickly (no Ansys needed):
-
-```powershell
-python "motor_optimizer_ver5.2(fix lan3)_remote.py" --test
-```
-
 Quick sanity run against Ansys (1 generation, 2 candidates):
 
 ```powershell
 python "motor_optimizer_ver5.2(fix lan3)_remote.py" --mode ansys --pop-size 2 --generations 1
-```
-
-Offline surrogate-only exploration (seconds, no Ansys):
-
-```powershell
-python "motor_optimizer_ver5.2(fix lan3)_remote.py" --mode offline --pop-size 12 --generations 30 --plot-all
-```
-
-Resume an interrupted run:
-
-```powershell
-python "motor_optimizer_ver5.2(fix lan3)_remote.py" --resume --mode ansys --generations 20
 ```
 
 ## CLI Reference
