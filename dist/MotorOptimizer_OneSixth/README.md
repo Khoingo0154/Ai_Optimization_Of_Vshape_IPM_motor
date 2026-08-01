@@ -32,6 +32,9 @@ All files must stay in the same folder as the `.exe`. Do not rename them.
 
 ## Quick Start (recommended)
 
+> If you downloaded this folder, you already have everything needed — no Python
+> installation required. Just follow the steps below.
+
 1. Double-click `run_ansys.bat`. It runs:
 
    ```bat

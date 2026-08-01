@@ -3,13 +3,28 @@
 AI-driven multi-objective optimization for **V-Shape Interior Permanent Magnet (IPM) motors** using **NSGA-II** with a 4-objective Pareto engine, an **ML surrogate model** for fast candidate screening, and direct **Ansys Maxwell** FEA integration.
 
 ```
-python motor_optimizer_ver5.2(fix\ lan3)_remote.py --mode ansys --pop-size 8 --generations 10 --plot-all
+python motor_optimizer_ver5.2(fix lan3)_remote.py --mode ansys --pop-size 8 --generations 10 --plot-all
 ```
+
+---
+
+## Quick Start (End Users)
+
+No Python or source code needed — the Python runtime is bundled in the packages.
+
+1. Download the `dist/` folder from this repository:
+   - `dist/MotorOptimizer/` — standard package (full 360° model, AEDT 2022.2+)
+   - `dist/MotorOptimizer_OneSixth/` — faster 1/6-sector model (AEDT 2026.1+)
+2. Keep the package folder **complete and unchanged** (the `.exe` requires the
+   `_internal\` folder next to it — do not download the `.exe` alone).
+3. Double-click `run_ansys.bat` inside the folder and wait for the optimization
+   to finish. Results appear in `outputs\run_YYYYMMDD_HHMMSS\`.
 
 ---
 
 ## Table of Contents
 
+- [Quick Start (End Users)](#quick-start-end-users)
 - [Features](#features)
 - [Architecture](#architecture)
 - [Optimization Objectives](#optimization-objectives)
