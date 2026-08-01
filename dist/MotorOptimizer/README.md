@@ -45,6 +45,14 @@ All files must stay in the same folder as the `.exe`. Do not rename them.
 
 ## Running from the Command Line
 
+Open **Command Prompt (CMD)** and change to the package folder (the one containing `MotorOptimizer.exe` — the program only finds its input files there):
+
+```bat
+cd /d "C:\path\to\MotorOptimizer"
+```
+
+Then run any of the following:
+
 ```bat
 :: 1) Verify installation (no Ansys needed) — expect "11/11 passed"
 MotorOptimizer.exe --test
@@ -58,6 +66,8 @@ MotorOptimizer.exe --mode ansys
 :: 4) Resume an interrupted run
 MotorOptimizer.exe --resume --mode ansys
 ```
+
+> `run_ansys.bat` is only a shortcut for command 3 plus a `pause` at the end — running the commands above in CMD works exactly the same.
 
 ## CLI Options
 
