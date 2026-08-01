@@ -65,20 +65,31 @@ MotorOptimizer_OneSixth.exe --resume --mode ansys
 
 ## CLI Options
 
-| Option                          | Default          | Description                                   |
-| ------------------------------- | ---------------- | --------------------------------------------- |
-| `--pop-size N`                  | 8                | Population size per generation                |
-| `--generations N`               | 10               | Maximum number of generations                 |
-| `--mode {offline,matlab,ansys}` | offline          | Evaluation mode; use `ansys` for Maxwell FEA  |
-| `--seed N`                      | —                | Random seed for reproducibility               |
-| `--resume`                      | —                | Continue from the last checkpoint             |
-| `--show-gui`                    | —                | Show the Ansys GUI (default: headless)        |
-| `--w-eff`                       | 1.0              | Efficiency objective weight                   |
-| `--w-ripple`                    | 1.0              | Torque ripple objective weight                |
-| `--w-pwr`                       | 0.5              | Power density objective weight                |
-| `--w-cost`                      | 0.05             | Cost objective weight                         |
-| `--plot-all`                    | —                | Generate all charts after completion          |
-| `--test`                        | —                | Run built-in unit tests and exit              |
+| Option                          | Default           | Description                                   |
+| ------------------------------- | ----------------- | --------------------------------------------- |
+| `--mode {offline,matlab,ansys}` | `offline`         | Evaluation backend; use `ansys` for Maxwell FEA |
+| `--algorithm {nsga2,ga}`        | `nsga2`           | Optimization engine (NSGA-II multi-objective) |
+| `--pop-size N`                  | 8                 | Population size per generation                |
+| `--generations N`               | 10                | Maximum number of generations                 |
+| `--crossover F`                 | 0.7               | Crossover probability                         |
+| `--mutation F`                  | 0.2               | Mutation rate per gene                        |
+| `--seed N`                      | —                 | Random seed for reproducibility               |
+| `--resume`                      | —                 | Continue from the last checkpoint             |
+| `--matlab-exe PATH`             | `C:\MATLAB\R2023b\bin\matlab.exe` | MATLAB executable path (mode `matlab`) |
+| `--non-graphical`               | True              | Run Ansys Maxwell headless (RAM/CPU savings)  |
+| `--show-gui`                    | —                 | Show the Ansys GUI                            |
+| `--keep-temp`                   | —                 | Keep temporary `.aedt` project files          |
+| `--w-eff`                       | 1.0               | Efficiency objective weight                   |
+| `--w-ripple`                    | 1.0               | Torque ripple objective weight                |
+| `--w-pwr`                       | 0.5               | Power density objective weight                |
+| `--w-cost`                      | 0.05              | Material cost objective weight                |
+| `--no-ml`                       | —                 | Disable ML surrogate (force 100% FEA)         |
+| `--no-screening`                | —                 | Disable surrogate candidate screening         |
+| `--no-local-search`             | —                 | Disable elite local search                    |
+| `--plot-pareto`                 | —                 | Generate 2D Pareto plot                       |
+| `--plot-all`                    | —                 | Generate all analysis & convergence charts    |
+| `--no-report`                   | —                 | Skip Markdown report generation               |
+| `--test`                        | —                 | Run built-in unit tests (11 checks) and exit  |
 
 ## Troubleshooting
 

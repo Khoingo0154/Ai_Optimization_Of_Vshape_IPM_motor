@@ -1,215 +1,244 @@
-# V-Shape IPM Motor AI Optimizer v5.2 (Fix Lần 3 Remote)
+# V-Shape IPM Motor AI Optimizer
 
-## 📌 Tổng quan Hệ thống
+AI-driven multi-objective optimization for **V-Shape Interior Permanent Magnet (IPM) motors** using **NSGA-II** with a 4-objective Pareto engine, an **ML surrogate model** for fast candidate screening, and direct **Ansys Maxwell** FEA integration.
 
-**V-Shape IPM Motor AI Optimizer v5.2 (Fix Lần 3 Remote)** là hệ thống tối ưu hóa đa mục tiêu cấp công nghiệp cho Động cơ Nam châm Vĩnh cửu Chìm hình chữ V (V-Shape Interior Permanent Magnet Motor).
-
-Hệ thống tích hợp bộ công cụ **NSGA-II 4D Pareto Hypervolume**, mô hình **Surrogate AI 4 đầu ra** (Gaussian Process với RBF kernel / KNN-IDW) và cơ chế giao tiếp trực tiếp với **Ansys Maxwell 3D** thông qua PyAEDT (Method A) hoặc win32com ActiveX (Method B).
-
----
-
-## 🚀 Các Điểm cải tiến & Sửa lỗi quan trọng trong Phân bản Fix Lần 3
-
-1. **RAM Guard & Tự động Restart AEDT Session**:
-   - Tự động giám sát dung lượng RAM hệ thống sử dụng `psutil`.
-   - Khi dung lượng RAM trống giảm xuống dưới **50%** tổng RAM hệ thống, hệ thống tự động đóng toàn bộ dự án, giải phóng bộ nhớ và khởi động lại session Ansys Electronics Desktop COM (`Quit` + `taskkill` `ansysedt.exe` + reconnect).
-   - Loại bỏ hoàn toàn hiện tượng rò rỉ bộ nhớ (OOM) và lỗi ngắt kết nối RPC Server (`The RPC server is unavailable`).
-
-2. **Khắc phục Lỗi COM Thread Affinity (`_analyze_with_timeout`)**:
-   - Thực thi trực tiếp hàm `oDesign.Analyze("Setup1")` trên Main Thread giữ kết lộ COM ban đầu.
-   - Khắc phục triệt để các ngoại lệ `AttributeError` (`SetActiveDesign.Analyze`) và `CoInitialize has not been called` khi chạy ở chế độ ẩn (headless) trên môi trường Remote hoặc Virtual Machine.
-
-3. **Cơ chế Thử lại Dọn dẹp File tạm 5 lần (`_cleanup_temp_project_files`)**:
-   - Tự động thử lại đến 5 lần với khoảng dừng 0.5s để giải phóng các file khóa Windows (`.aedt.lock`, `.aedt.auto`, `.aedtresults`).
-   - Xử lý dứt điểm xung đột khóa tệp từ các tiến trình Ansys chạy ngầm.
-
-4. **Tương thích Cloudpaging Player & Safe Headless Mode**:
-   - Tự động thiết lập `SetIconic(True)` khi chạy ẩn (`--non-graphical`).
-   - Đảm bảo tiến trình chạy mượt mà trên môi trường ảo hóa bản quyền Cloudpaging Player mà không làm chiếm tiêu điểm màn hình hay cướp chuột của người dùng.
-
-5. **Mô hình AI Surrogate 4 Đầu Ra & Confidence Fallback (`MLSurrogate`)**:
-   - Duy trì 4 mô hình Gaussian Process / KNN độc lập cho 4 mục tiêu tối ưu.
-   - Khi độ không đảm bảo (uncertainty / standard deviation) ở **bất kỳ** mục tiêu nào vượt quá **2.5%**, hệ thống tự động kích hoạt mô phỏng FEA Ansys thực tế.
-
-6. **Tự động Warm-Start từ Lịch sử Mô phỏng**:
-   - Nạp cá thể xuất sắc nhất từ file lịch sử `simulation_history.csv` trước đó vào quần thể ban đầu (`population[0]`).
-
-7. **Phân tích Nhạy cảm Đa mục tiêu (Per-Objective Sensitivity Mutation)**:
-   - Tính toán hệ số tương quan thứ hạng Spearman riêng biệt cho từng thông số đối với từng mục tiêu trong số 4 mục tiêu để điều hướng đột biến thông minh.
-
-8. **Tìm kiếm Cục bộ Elite Multi-Objective (`perform_elite_local_search`)**:
-   - Tạo các biến động bước nhỏ xung quanh các cá thể Pareto Rank-0 tốt nhất, kiểm tra lại tất cả các ràng buộc hình học và tiêu chí áp đảo Pareto.
-
-9. **Cấu trúc Thư mục Kết quả Đầu ra theo Timestamp**:
-   - Lưu tự động kết quả vào `outputs/run_YYYYMMDD_HHMMSS/` đồng thời tự động cập nhật liên kết `outputs/latest/` trỏ tới lần chạy gần nhất.
+```
+python motor_optimizer_ver5.2(fix\ lan3)_remote.py --mode ansys --pop-size 8 --generations 10 --plot-all
+```
 
 ---
 
-## 🎯 4 Mục tiêu Tối ưu hóa (4-Objective Pareto Engine)
+## Table of Contents
 
-Engine NSGA-II tối ưu hóa đồng thời 4 mục tiêu cốt lõi:
+- [Features](#features)
+- [Architecture](#architecture)
+- [Optimization Objectives](#optimization-objectives)
+- [Design Variables](#design-variables)
+- [Geometric Constraints](#geometric-constraints)
+- [Installation](#installation)
+- [Usage](#usage)
+- [CLI Reference](#cli-reference)
+- [Outputs](#outputs)
+- [Testing](#testing)
+- [Repository Layout](#repository-layout)
 
-| Mục tiêu | Công thức / Định nghĩa | Đơn vị | Hướng Tối ưu |
+---
+
+## Features
+
+- **4-objective Pareto optimization** (NSGA-II): efficiency, torque ripple, power density, and material cost.
+- **ML surrogate screening** — Gaussian Process / KNN models (4 independent outputs) fall back to real FEA when uncertainty exceeds 2.5%.
+- **Direct Ansys Maxwell 3D integration** via win32com ActiveX (Method B) or PyAEDT (Method A, optional).
+- **RAM Guard** — automatic AEDT session restart when free memory drops below 50%, eliminating RPC disconnects and OOM.
+- **COM thread-affinity fix** — reliable headless operation on remote/VPN/VM machines.
+- **Elite local search** around Pareto rank-0 individuals with full constraint re-check.
+- **Per-objective sensitivity mutation** driven by Spearman rank correlation.
+- **Warm-start** from the best known individual in `simulation_history.csv`.
+- **Resume** interrupted runs from checkpoint.
+- **Timestamped outputs** (`outputs/run_YYYYMMDD_HHMMSS/`).
+
+## Architecture
+
+```
+┌─────────────────────────────┐
+│ NSGA-II (4D Pareto engine)  │
+│  - non-dominated sorting    │
+│  - crowding distance        │
+│  - hypervolume tracking     │
+│  - elite local search       │
+└─────────────┬───────────────┘
+              │ candidate designs (19 vars)
+              ▼
+┌─────────────────────────────┐
+│ ML Surrogate (screening)    │
+│  GP (RBF) / KNN — 4 outputs │
+│  uncertainty > 2.5% → FEA   │
+└─────────────┬───────────────┘
+              │ selected candidates
+              ▼
+┌─────────────────────────────┐
+│ Ansys Maxwell 3D (FEA)      │
+│  COM thread-affinity fix    │
+│  RAM guard / session reset  │
+└─────────────┬───────────────┘
+              │ objectives
+              ▼
+         Pareto front → report + plots
+```
+
+## Optimization Objectives
+
+| Objective | Definition | Unit | Direction |
 |---|---|---|---|
-| **Efficiency ($\eta$)** | $P_{\text{out}} / P_{\text{in}} \times 100$ | $\%$ | **TỐI ĐA HÓA (MAXIMIZE)** |
-| **Power Density** | $P_{\text{out}} / W_{\text{total}}$ | $\text{kW/kg}$ | **TỐI ĐA HÓA (MAXIMIZE)** |
-| **Material Cost** | $\sum (V_i \times \text{costPerVolume}_i)$ | $\$$ | **TỐI THIỂU HÓA (MINIMIZE)** |
-| **Torque Ripple** | $\frac{\text{pk2pk}(T)}{\text{mean}(T)} \times 100$ | $\%$ | **TỐI THIỂU HÓA (MINIMIZE)** |
+| Efficiency (η) | `P_out / P_in × 100` | % | **Maximize** |
+| Power Density | `P_out / W_total` | kW/kg | **Maximize** |
+| Material Cost | `Σ(V_i × costPerVolume_i)` | USD | **Minimize** |
+| Torque Ripple | `pk2pk(T) / mean(T) × 100` | % | **Minimize** |
 
-### Điểm Số Thứ Cấp (Secondary Composite Score):
-$$\text{Score} = (w_{\text{eff}} \times \text{Eff}) - (w_{\text{ripple}} \times \text{Ripple}) + (w_{\text{pwr}} \times \text{Pwr}) - \left(w_{\text{cost}} \times \frac{\text{Cost}}{150}\right)$$
+**Secondary composite score** (used for ranking in reports):
 
----
+```
+Score = (w_eff × Eff) − (w_ripple × Ripple) + (w_pwr × Pwr) − (w_cost × Cost/150)
+```
 
-## 📐 19 Biến Thiết kế & 10 Biến Phụ thuộc
+## Design Variables
 
-### 19 Biến Thiết kế Tự do (Đọc từ `Ai_Optimization_Bounds.xlsx`):
+19 free design variables, loaded from `Ai_Optimization_Bounds.xlsx` (edit that file to change the search space):
 
-| Biến | Mô tả Chi tiết | Giới hạn Dưới | Giới hạn Trên | Bước Nhảy | Đơn vị |
+| Variable | Description | Min | Max | Step | Unit |
 |---|---|---|---|---|---|
-| `Dr_in` | Đường kính trong Rotor | 50.0 | 90.0 | 5.0 | mm |
-| `Air_gap` | Khe hở không khí | 0.5 | 1.5 | 0.1 | mm |
-| `Lamda` | Hệ số chiều dài lõi thép | 0.8 | 1.0 | 0.1 | - |
-| `Bridge` | Độ dày cầu từ rotor | 1.0 | 3.0 | 0.1 | mm |
-| `Hs0` | Chiều cao miệng rãnh stator | 1.0 | 2.0 | 0.1 | mm |
-| `Hs1` | Chiều cao vai rãnh stator | 1.0 | 2.0 | 0.1 | mm |
-| `Hs2` | Chiều cao thân rãnh stator | 16.0 | 30.0 | 1.0 | mm |
-| `Bs0` | Chiều rộng miệng rãnh stator | 1.5 | 4.0 | 0.5 | mm |
-| `Bs1` | Chiều rộng vai rãnh stator | 3.0 | 10.0 | 0.5 | mm |
-| `Bs2` | Chiều rộng đáy rãnh stator | 5.0 | 14.0 | 1.0 | mm |
-| `O1` | Khoảng cách hốc nam châm V1 | 0.0 | 13.0 | 1.0 | mm |
-| `O2` | Khoảng cách hốc nam châm V2 | 2.0 | 7.0 | 0.5 | mm |
-| `B1` | Chiều rộng hốc chứa nam châm | 3.2 | 5.0 | 0.5 | mm |
-| `rib` | Độ rộng gân trung tâm rotor | 2.0 | 15.0 | 1.0 | mm |
-| `hrib` | Chiều cao gân trung tâm | 2.0 | 6.0 | 0.5 | mm |
-| `Mt` | Độ dày nam châm vĩnh cửu | 4.0 | 6.0 | 0.2 | mm |
-| `Mw` | Bề rộng nam châm vĩnh cửu | 10.0 | 30.0 | 2.0 | mm |
-| `magDmin` | Khoảng cách đáy hốc nam châm | 0.0 | 10.0 | 1.0 | mm |
-| `Thet_deg` | Góc mở V nam châm vĩnh cửu | 0.0 | 90.0 | 1.0 | deg |
+| `Dr_in` | Rotor inner diameter | 50.0 | 90.0 | 5.0 | mm |
+| `Air_gap` | Air gap | 0.5 | 1.5 | 0.1 | mm |
+| `Lamda` | Stack length factor | 0.8 | 1.0 | 0.1 | — |
+| `Bridge` | Rotor flux-bridge thickness | 1.0 | 3.0 | 0.1 | mm |
+| `Hs0` | Slot opening height | 1.0 | 2.0 | 0.1 | mm |
+| `Hs1` | Slot shoulder height | 1.0 | 2.0 | 0.1 | mm |
+| `Hs2` | Slot body height | 16.0 | 30.0 | 1.0 | mm |
+| `Bs0` | Slot opening width | 1.5 | 4.0 | 0.5 | mm |
+| `Bs1` | Slot shoulder width | 3.0 | 10.0 | 0.5 | mm |
+| `Bs2` | Slot bottom width | 5.0 | 14.0 | 1.0 | mm |
+| `O1` | Magnet pocket V1 offset | 0.0 | 13.0 | 1.0 | mm |
+| `O2` | Magnet pocket V2 offset | 2.0 | 7.0 | 0.5 | mm |
+| `B1` | Magnet pocket width | 3.2 | 5.0 | 0.5 | mm |
+| `rib` | Central rib width | 2.0 | 15.0 | 1.0 | mm |
+| `hrib` | Central rib height | 2.0 | 6.0 | 0.5 | mm |
+| `Mt` | Magnet thickness | 4.0 | 6.0 | 0.2 | mm |
+| `Mw` | Magnet width | 10.0 | 30.0 | 2.0 | mm |
+| `magDmin` | Magnet pocket bottom clearance | 0.0 | 10.0 | 1.0 | mm |
+| `Thet_deg` | V-magnet opening angle | 0.0 | 90.0 | 1.0 | deg |
 
-### 10 Biến Phụ thuộc (Tính toán động tự động):
-- `D_ag`: Đường kính khe hở không khí = $L_{\text{STK}} / \text{Lamda}$
-- `Ds_in`: Đường kính trong Stator = $D_{\text{ag}} + \text{Air\_gap}$
-- `Dr_out`: Đường kính ngoài Rotor = $D_{\text{s\_in}} - 2 \times \text{Air\_gap}$
-- `Speed_rpm`: Tốc độ đồng bộ = $120 \times f_0 / P = 1000\text{ RPM}$
-- `A_slot`: Diện tích rãnh Stator = $213.17\text{ mm}^2$
-- `D1`: Đường kính trong Rotor sau cầu từ = $D_{\text{s\_in}} - 2\times\text{Air\_gap} - 2\times\text{Bridge}$
-- `Acond`: Diện tích dây dẫn = $I_{\text{max}} / J = 200 / 5.5 = 36.36\text{ mm}^2$
-- `N`: Số vòng dây mỗi rãnh = $\lceil 0.7 \times A_{\text{slot}} / A_{\text{cond}} \rceil$
-- `t0`: Thời điểm ban đầu = $0.0\text{ ms}$
-- `Thet`: Góc Momen tính bằng Radian = $\text{Thet\_deg} \times \pi / 180$
+10 dependent variables (auto-derived per candidate): `D_ag`, `Ds_in`, `Dr_out`, `Speed_rpm` (= 1000 RPM at 6 poles / 50 Hz), `A_slot`, `D1`, `Acond`, `N`, `t0`, `Thet`.
 
----
+## Geometric Constraints
 
-## 🔒 6 Ràng buộc Hình học (Geometric Constraints)
+Every candidate must satisfy all 6 constraints (violations are auto-repaired):
 
-Mọi thiết kế động cơ phải thỏa mãn đồng thời 6 điều kiện hình học:
-1. **SlotHeight**: $Hs_0 + Hs_1 + Hs_2 < \frac{Ds_{\text{out}} - Ds_{\text{in}}}{2} - 12.25\text{ mm}$
-2. **SlotWidthProgression**: $Bs_0 \le Bs_1 \le Bs_2$
-3. **BridgeThickness**: $B1 \le Mt - 0.3\text{ mm}$
-4. **RotorFitsStator**: $Dr_{\text{out}} > Dr_{\text{in}}$
-5. **MagnetDuctFit**: $Mw > 2 \times B1$
-6. **RibHeightLimit**: $hrib \le \min(O2, 4.5, 2 \times Bridge)$
+| # | Constraint | Condition |
+|---|---|---|
+| 1 | SlotHeight | `Hs0 + Hs1 + Hs2 < (Ds_out − Ds_in)/2 − 12.25 mm` |
+| 2 | SlotWidthProgression | `Bs0 ≤ Bs1 ≤ Bs2` |
+| 3 | BridgeThickness | `B1 ≤ Mt − 0.3 mm` |
+| 4 | RotorFitsStator | `Dr_out > Dr_in` |
+| 5 | MagnetDuctFit | `Mw > 2 × B1` |
+| 6 | RibHeightLimit | `hrib ≤ min(O2, 4.5, 2 × Bridge)` |
 
----
+## Installation
 
-## 🛠️ Hướng dẫn Cài đặt & Sử dụng
+Requires **Python 3.10+** (tested on 3.13/3.14) and **Ansys Electronics Desktop** (for `--mode ansys`; use AEDT **2022.2 or newer** with the standard model, **2026.1 or newer** with the 1/6-sector OneSixth model).
 
-### 1. Kích hoạt Môi trường Virtual Environment
-- **PowerShell**:
-  ```powershell
-  .\.venv\Scripts\Activate.ps1
-  ```
-- **Command Prompt (CMD)**:
-  ```cmd
-  .\.venv\Scripts\activate.bat
-  ```
-
-### 2. Cài đặt Thư viện Phụ thuộc
 ```bash
+git clone https://github.com/Khoingo0154/Ai_Optimization_Of_Vshape_IPM_motor.git
+cd Ai_Optimization_Of_Vshape_IPM_motor
+
+python -m venv .venv
+.venv\Scripts\activate        # Windows
 pip install -r requirements.txt
 ```
 
----
+Note: `pyaedt` is optional (only needed for Method A); Method B (win32com ActiveX) is used by default.
 
-## 💻 Bảng Lệnh Chạy (CLI Reference)
+## Usage
 
-### Cú pháp Lệnh Chạy:
-```bash
-python "motor_optimizer_ver5.2(fix lan3)_remote.py" [các tùy chọn]
+Basic production run (Ansys Maxwell FEA):
+
+```powershell
+python "motor_optimizer_ver5.2(fix lan3)_remote.py" --mode ansys --pop-size 8 --generations 10 --plot-all
 ```
 
-### Các Lệnh Thực Tế Khuyên Dùng:
+Verify installation quickly (no Ansys needed):
 
-1. **Chạy Mô phỏng FEA Ansys Maxwell Trực tiếp (Production Khuyên dùng)**:
-   ```powershell
-   python "motor_optimizer_ver5.2(fix lan3)_remote.py" --mode ansys --algorithm nsga2 --pop-size 8 --generations 10 --plot-all
-   ```
+```powershell
+python "motor_optimizer_ver5.2(fix lan3)_remote.py" --test
+```
 
-2. **Chạy Bộ Kiểm thử Hệ thống (Built-in Unit Tests - 15 test cases)**:
-   ```powershell
-   python "motor_optimizer_ver5.2(fix lan3)_remote.py" --test
-   ```
+Quick sanity run against Ansys (1 generation, 2 candidates):
 
-3. **Chạy Mô phỏng Offline bằng AI Surrogate (Vài giây)**:
-   ```powershell
-   python "motor_optimizer_ver5.2(fix lan3)_remote.py" --mode offline --pop-size 12 --generations 30 --plot-all
-   ```
+```powershell
+python "motor_optimizer_ver5.2(fix lan3)_remote.py" --mode ansys --pop-size 2 --generations 1
+```
 
-4. **Tiếp tục Chạy từ Checkpoint bị ngắt quãng (`--resume`)**:
-   ```powershell
-   python "motor_optimizer_ver5.2(fix lan3)_remote.py" --resume --mode ansys --generations 20
-   ```
+Offline surrogate-only exploration (seconds, no Ansys):
 
-5. **Chạy qua Cầu nối MATLAB ActiveX**:
-   ```powershell
-   python "motor_optimizer_ver5.2(fix lan3)_remote.py" --mode matlab --algorithm nsga2 --pop-size 10 --generations 8
-   ```
+```powershell
+python "motor_optimizer_ver5.2(fix lan3)_remote.py" --mode offline --pop-size 12 --generations 30 --plot-all
+```
 
----
+Resume an interrupted run:
 
-## 📊 Bảng Tham số Command-Line (CLI Options)
+```powershell
+python "motor_optimizer_ver5.2(fix lan3)_remote.py" --resume --mode ansys --generations 20
+```
 
-| Tham số CLI | Mặc định | Mô tả & Hướng dẫn sử dụng |
+## CLI Reference
+
+| Option | Default | Description |
 |---|---|---|
-| `--mode` | `offline` | Chế độ mô phỏng: `ansys` (PyAEDT/ActiveX), `matlab` (MATLAB bridge), `offline`. |
-| `--algorithm` | `nsga2` | Thuật toán: `nsga2` (Đa mục tiêu NSGA-II) hoặc `ga` (Di truyền đơn mục tiêu). |
-| `--pop-size` | `8` | Kích thước quần thể (Số lượng mẫu đánh giá mỗi thế hệ). |
-| `--generations` | `10` | Số lượng thế hệ tối đa. |
-| `--crossover` | `0.7` | Xác suất lai ghép (Crossover probability). |
-| `--mutation` | `0.2` | Tỷ lệ đột biến gen (Mutation rate per gene). |
-| `--w-eff` | `1.0` | Trọng số Hiệu suất trong điểm tổng hợp (Efficiency weight). |
-| `--w-ripple` | `1.0` | Trọng số Độ nhấp nhô Momen trong điểm tổng hợp (Torque Ripple weight). |
-| `--w-pwr` | `0.5` | Trọng số Mật độ công suất (Power Density weight). |
-| `--w-cost` | `0.05` | Trọng số Chi phí vật liệu (Cost penalty weight). |
-| `--non-graphical` | `True` | Chạy Ansys Maxwell không giao diện (Headless mode) tiết kiệm RAM/CPU. |
-| `--show-gui` | `False` | Hiển thị giao diện Ansys Maxwell (tương đương `--no-non-graphical`). |
-| `--resume` | `False` | Khôi phục trạng thái từ checkpoint `optimizer_state.pkl`. |
-| `--plot-all` | `False` | Tự động tạo tất cả 4 biểu đồ phân tích & hội tụ khi hoàn thành. |
-| `--plot-pareto` | `False` | Tự động tạo biểu đồ 2D Pareto Front. |
-| `--test` | `False` | Chạy bộ 15 Unit Tests kiểm thử toàn bộ hệ thống rồi thoát. |
-| `--no-ml` | `False` | Tắt mô hình AI Surrogate, buộc mô phỏng FEA 100%. |
-| `--no-local-search` | `False` | Tắt tính năng tìm kiếm cục bộ Elite. |
-| `--no-report` | `False` | Bỏ qua việc tạo báo cáo Markdown (`optimization_report.md`). |
-| `--keep-temp` | `False` | Giữ lại các file dự án `.aedt` tạm thời sau khi hoàn tất. |
-| `--seed` | `None` | Hạt giống ngẫu nhiên (Random seed) để tái lập kết quả. |
+| `--mode {offline,matlab,ansys}` | `offline` | Evaluation backend: `ansys` (Maxwell FEA), `matlab` (MATLAB bridge), `offline` (surrogate only) |
+| `--algorithm {nsga2,ga}` | `nsga2` | Optimization engine: NSGA-II (multi-objective) or GA (single-objective) |
+| `--pop-size N` | `8` | Population size per generation |
+| `--generations N` | `10` | Maximum number of generations |
+| `--crossover F` | `0.7` | Crossover probability |
+| `--mutation F` | `0.2` | Mutation rate per gene |
+| `--seed N` | — | Random seed for reproducibility |
+| `--resume` | — | Resume from checkpoint |
+| `--matlab-exe PATH` | `C:\MATLAB\R2023b\bin\matlab.exe` | MATLAB executable path |
+| `--non-graphical` | `True` | Run Ansys Maxwell headless (RAM/CPU savings) |
+| `--show-gui` | — | Show the Ansys GUI |
+| `--keep-temp` | — | Keep temporary `.aedt` project files |
+| `--w-eff F` | `1.0` | Efficiency objective weight |
+| `--w-ripple F` | `1.0` | Torque ripple objective weight |
+| `--w-pwr F` | `0.5` | Power density objective weight |
+| `--w-cost F` | `0.05` | Material cost objective weight |
+| `--no-ml` | — | Disable ML surrogate (force 100% FEA) |
+| `--no-screening` | — | Disable surrogate candidate screening |
+| `--no-local-search` | — | Disable elite local search |
+| `--plot-pareto` | — | Generate 2D Pareto plot |
+| `--plot-all` | — | Generate all analysis & convergence plots |
+| `--no-report` | — | Skip Markdown report generation |
+| `--test` | — | Run built-in unit tests (11 checks) and exit |
 
----
+## Outputs
 
-## 📂 Cấu trúc Thư mục Kết quả Đầu ra (`outputs/`)
+Every run writes to `outputs/run_YYYYMMDD_HHMMSS/`, with `outputs/latest/` symlinked to the most recent run:
 
-Tất cả kết quả của mỗi lần chạy được lưu tự động vào thư mục:
-`outputs/run_YYYYMMDD_HHMMSS/` (được liên kết bởi `outputs/latest/`)
+| File | Description |
+|---|---|
+| `best_optimized_design_v5.2.csv` | Best design: 19 variables + objectives |
+| `simulation_history.csv` | Full history of all evaluated candidates |
+| `log_history.csv` | Per-candidate log & constraint violations |
+| `optimizer.log` | Timestamped execution log |
+| `optimization_report.md` | Auto-generated Markdown report |
+| `pareto_front.png` | 2D Pareto front (efficiency vs ripple) |
+| `pareto_3d.png` | 3D Pareto (efficiency, ripple, cost) |
+| `parallel_coordinates.png` | 4-objective parallel coordinates |
+| `convergence_history.png` | 4D hypervolume & best-score convergence |
 
-Các tệp kết quả bao gồm:
-- `best_optimized_design_v5.2.csv`: Thông số 19 biến và chỉ số của thiết kế tối ưu nhất.
-- `simulation_history.csv`: Lịch sử đầy đủ của toàn bộ cá thể đã đánh giá.
-- `log_history.csv`: Nhật ký chi tiết kết quả mô phỏng và vi phạm ràng buộc.
-- `optimizer.log`: Nhật ký thực thi hệ thống chi tiết theo thời gian.
-- `optimization_report.md`: Báo cáo tổng quan dạng Markdown tự động tạo.
-- `pareto_front.png`: Đồ thị Pareto 2D (Hiệu suất vs Độ nhấp nhô Momen).
-- `pareto_3d.png`: Đồ thị Pareto 3D (Hiệu suất vs Độ nhấp nhô Momen vs Chi phí).
-- `parallel_coordinates.png`: Đồ thị Tọa độ Song song 4 mục tiêu.
-- `convergence_history.png`: Đồ thị Hội tụ 4D Hypervolume & Best Score qua các thế hệ.
+## Testing
 
----
+Run the built-in unit-test suite (11 checks — constraints, NSGA-II sorting, crowding distance, hypervolume, dependent variables, repair mechanism, key normalization):
+
+```powershell
+python "motor_optimizer_ver5.2(fix lan3)_remote.py" --test
+```
+
+Expected output:
+
+```
+Unit Test Suite Results: 11/11 passed, 0/11 failed
+```
+
+## Repository Layout
+
+```
+├── motor_optimizer_ver5.2(fix lan3)_remote.py   # main optimizer (standard 360° model)
+├── motor_optimizer_ver5.2(fix lan3)_oneSixth_remote.py  # 1/6-sector variant (AEDT 2026.1+)
+├── Ai_Optimization_Bounds.xlsx                  # 19 design variables bounds
+├── Matlab_Ai_Optimization.aedt                  # Ansys Maxwell project (standard)
+├── Matlab_Ai_Optimization_oneSixth.aedt         # Ansys Maxwell project (1/6 sector)
+├── requirements.txt
+└── dist/
+    ├── MotorOptimizer/           # standalone exe package (standard)
+    └── MotorOptimizer_OneSixth/  # standalone exe package (1/6 sector)
+```
+
+> **Note:** The `dist/` folders contain self-contained Windows executables (Python bundled) for deployment on machines without Python. Run `MotorOptimizer.exe --test` on the target machine to verify.
