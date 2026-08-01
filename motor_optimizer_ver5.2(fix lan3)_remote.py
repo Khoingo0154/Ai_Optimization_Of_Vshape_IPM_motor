@@ -2430,7 +2430,10 @@ def main():
     if args.plot_all:
         args.plot_pareto = True
 
-    script_dir = Path(__file__).resolve().parent
+    if getattr(sys, "frozen", False):
+        script_dir = Path(sys.executable).resolve().parent
+    else:
+        script_dir = Path(__file__).resolve().parent
     root_dir = script_dir
 
     # Phase 1.2: Timestamped output folder with latest symlink
